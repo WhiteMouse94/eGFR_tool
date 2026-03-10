@@ -891,28 +891,27 @@
 
     <!-- Header -->
     <div class="hdr">
-      <div class="hdr-top">
-        <div class="hdr-left">
+      <div class="hdr-top" style="flex-wrap: wrap; gap: 12px;">
+        <div class="hdr-left" style="min-width: 100%;">
           <div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div>
           <h1>eGFR <span>入组筛查工具</span></h1>
         </div>
 
-        <div class="demo-btns"
-          style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; max-width: 220px;">
+        <div class="demo-btns" style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
           <button
-            style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid var(--green); background:var(--green-dim); color:var(--green); cursor:pointer;"
+            style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--green); background:var(--green-dim); color:var(--green); cursor:pointer;"
             onclick="fillDemo(1)">PASS</button>
           <button
-            style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid var(--red); background:var(--red-dim); color:var(--red); cursor:pointer;"
+            style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--red); background:var(--red-dim); color:var(--red); cursor:pointer;"
             onclick="fillDemo(2)">FAIL</button>
           <button
-            style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid var(--yellow); background:var(--yellow-dim); color:var(--yellow); cursor:pointer;"
+            style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--yellow); background:var(--yellow-dim); color:var(--yellow); cursor:pointer;"
             onclick="fillDemo(3)">REVIEW</button>
+          <div style="flex-grow: 1;"></div>
           <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="切换白天/夜间模式"
-            style="margin:0; padding:2px 6px">☀️</button>
+            style="margin:0; padding:4px 10px; border-radius:8px;">☀️</button>
         </div>
       </div>
-
     </div>
 
     <!-- Subject Info -->
