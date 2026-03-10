@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>eGFR 入组筛查工具 | RENEW-CKD HRS-7535-307</title>
+  <meta name="description" content="RENEW-CKD HRS-7535-307 eGFR入组筛查工具，CKD-EPI 2021 Race-free，CRC专用。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Dark mode (default) ── */
+    :root {
+      --bg-deep: #08121e;
+      --bg-card: rgba(255, 255, 255, 0.055);
+      --bg-input: rgba(255, 255, 255, 0.07);
+      --bg-select: #0f1e30;
+      --border: rgba(255, 255, 255, 0.10);
+      --border-focus: rgba(56, 209, 196, 0.60);
+      --teal: #38d1c4;
+      --teal-dim: rgba(56, 209, 196, 0.15);
+      --green: #34d399;
+      --green-dim: rgba(52, 211, 153, 0.15);
+      --yellow: #fbbf24;
+      --yellow-dim: rgba(251, 191, 36, 0.15);
+      --red: #f87171;
+      --red-dim: rgba(248, 113, 113, 0.15);
+      --text-1: #f0f6fd;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --shadow: none;
+      --accent-grad: linear-gradient(135deg, #38d1c4, #22a8c8);
+    }
+
+    /* ── Light mode ── */
+    body.light {
+      --bg-deep: #f0f4f8;
+      --bg-card: rgba(255, 255, 255, 0.88);
+      --bg-input: #ffffff;
+      --bg-select: #ffffff;
+      --border: rgba(15, 30, 60, 0.12);
+      --border-focus: rgba(13, 148, 136, 0.55);
+      --teal: #0d9488;
+      --teal-dim: rgba(13, 148, 136, 0.10);
+      --green: #059669;
+      --green-dim: rgba(5, 150, 105, 0.10);
+      --yellow: #b45309;
+      --yellow-dim: rgba(180, 83, 9, 0.10);
+      --red: #dc2626;
+      --red-dim: rgba(220, 38, 38, 0.10);
+      --text-1: #0f172a;
+      --text-2: #334155;
+      --text-3: #64748b;
+      --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      --accent-grad: linear-gradient(135deg, #0d9488, #0284c7);
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      background: var(--bg-deep);
+      color: var(--text-1);
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition: background .25s, color .25s;
+    }
+
+    .page {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 0 80px;
+    }
+
+    /* ── Header ── */
+    .hdr {
+      padding: 22px 20px 18px;
+      background: linear-gradient(180deg, rgba(56, 209, 196, 0.10) 0%, transparent 100%);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    body.light .hdr {
+      background: linear-gradient(180deg, rgba(13, 148, 136, 0.07) 0%, rgba(240, 244, 248, 0.95) 100%);
+    }
+
+    .hdr-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .hdr-left {
+      flex: 1;
+    }
+
+    .hdr-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--teal-dim);
+      border: 1px solid rgba(56, 209, 196, 0.3);
+      color: var(--teal);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    body.light .hdr-badge {
+      border-color: rgba(13, 148, 136, 0.3);
+    }
+
+    .hdr-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .5;
+        transform: scale(.8)
+      }
+    }
+
+    .hdr h1 {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .hdr h1 span {
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hdr-formula {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--teal-dim);
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-top: 5px;
+    }
+
+    /* Theme toggle */
+    .theme-btn {
+      flex-shrink: 0;
+      margin-left: 12px;
+      margin-top: 2px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 17px;
+      line-height: 1;
+      transition: all .2s;
+      color: var(--text-2);
+    }
+
+    .theme-btn:hover {
+      border-color: var(--teal);
+      background: var(--teal-dim);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin: 12px 16px 0;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--teal);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 14px;
+      background: var(--teal);
+      border-radius: 2px;
+    }
+
+    /* ── Form ── */
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"] {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 10px 12px;
+      outline: none;
+      width: 100%;
+      transition: border-color .2s, box-shadow .2s;
+      box-shadow: var(--shadow);
+    }
+
+    .form-group input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(56, 209, 196, 0.12);
+    }
+
+    .form-group input::placeholder {
+      color: var(--text-3);
+    }
+
+    /* sex toggle */
+    .sex-toggle {
+      display: flex;
+      gap: 6px;
+    }
+
+    .sex-btn {
+      flex: 1;
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-input);
+      color: var(--text-2);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all .2s;
+      user-select: none;
+      box-shadow: var(--shadow);
+    }
+
+    .sex-btn.active {
+      background: var(--teal-dim);
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    /* ── SCr Table ── */
+    .scr-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    .scr-table th {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-3);
+      letter-spacing: .05em;
+      padding: 0 4px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* date-triple layout */
+    .date-triple {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .dt-year {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 0 6px 6px 0;
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 4px 2px;
+      outline: none;
+      width: 50px;
+      flex-shrink: 0;
+      text-align: center;
+      transition: border-color .2s;
+      box-shadow: var(--shadow);
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .dt-year::-webkit-outer-spin-button,
+    .dt-year::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .dt-year:focus {
+      border-color: var(--border-focus);
+    }
+
+    .dt-year::placeholder {
+      color: var(--text-3);
+      font-size: 11px;
+    }
+
+    .dt-sel {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 6px 2px 6px 5px;
+      outline: none;
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+      transition: border-color .2s;
+      box-shadow: var(--shadow);
+    }
+
+    .dt-sel:focus {
+      border-color: var(--border-focus);
+    }
+
+    .dt-sel option {
+      background: var(--bg-select);
+      color: var(--text-1);
+    }
+
+    .today-btn {
+      flex-shrink: 0;
+      background: var(--teal-dim);
+      border: 1px solid rgba(56, 209, 196, 0.3);
+      border-radius: 6px;
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: inherit;
+      padding: 5px 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+      line-height: 1;
+    }
+
+    .today-btn:hover {
+      background: rgba(56, 209, 196, 0.25);
+    }
+
+    /* Year "20" prefix & ID "CN" prefix */
+    .yr-prefix {
+      padding: 0 5px;
+      font-size: 12px;
+      border-radius: 6px 0 0 6px;
+      border-right: none;
+      height: 28px;
+      flex-shrink: 0;
+      background: var(--teal-dim);
+      border: 1px solid var(--border);
+      color: var(--teal);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .id-prefix {
+      flex-shrink: 0;
+      background: var(--teal-dim);
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0 7px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .yr-input-wrap {
+      display: flex;
+      align-items: center;
+    }
+
+    .id-input-wrap {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .id-input-wrap .sid-inp {
+      flex: 1;
+      border-radius: 0 8px 8px 0 !important;
+      border-left: none !important;
+    }
+
+    /* Month / Day number inputs */
+    .dt-mday {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 4px 2px;
+      width: 50px;
+      text-align: center;
+      transition: border-color .2s;
+      box-shadow: var(--shadow);
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .dt-mday::-webkit-outer-spin-button,
+    .dt-mday::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .dt-mday:focus {
+      border-color: var(--border-focus);
+    }
+
+    .dt-mday::placeholder {
+      color: var(--text-3);
+      font-size: 11px;
+    }
+
+    .scr-inp {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 6px 7px;
+      outline: none;
+      width: 100%;
+      transition: border-color .2s;
+      box-shadow: var(--shadow);
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .scr-inp::-webkit-outer-spin-button,
+    .scr-inp::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .scr-inp:focus {
+      border-color: var(--border-focus);
+    }
+
+    .scr-inp::placeholder {
+      color: var(--text-3);
+    }
+
+    .scr-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .scr-badge.screening {
+      background: var(--teal-dim);
+      color: var(--teal);
+      border: 1px solid rgba(56, 209, 196, .25);
+    }
+
+    .scr-badge.history {
+      background: var(--bg-input);
+      color: var(--text-3);
+      border: 1px solid var(--border);
+    }
+
+    .del-btn {
+      background: none;
+      border: none;
+      color: var(--text-3);
+      cursor: pointer;
+      font-size: 17px;
+      line-height: 1;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color .2s;
+    }
+
+    .del-btn:hover {
+      color: var(--red);
+    }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1.5px dashed rgba(56, 209, 196, 0.30);
+      border-radius: 10px;
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 8px 14px;
+      cursor: pointer;
+      width: 100%;
+      transition: all .2s;
+      margin-top: 4px;
+    }
+
+    .add-btn:hover {
+      background: var(--teal-dim);
+      border-color: var(--teal);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      line-height: 1.5;
+    }
+
+    /* ── Calc Button ── */
+    .calc-wrap {
+      padding: 14px 16px;
+    }
+
+    .calc-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent-grad);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+      box-shadow: 0 4px 20px rgba(56, 209, 196, 0.30);
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .calc-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(56, 209, 196, 0.42);
+    }
+
+    .calc-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ── Error ── */
+    .error-banner {
+      margin: 0 16px;
+      padding: 12px 14px;
+      background: var(--red-dim);
+      border: 1px solid rgba(248, 113, 113, .3);
+      border-radius: 12px;
+      color: var(--red);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      display: none;
+    }
+
+    /* ── Result Panel ── */
+    #result-panel {
+      display: none;
+    }
+
+    .metrics-row {
+      display: flex;
+      gap: 8px;
+      margin: 12px 16px 0;
+    }
+
+    .metric-card {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-2);
+      letter-spacing: .04em;
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .metric-unit {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 2px;
+    }
+
+    .mv-blue {
+      color: #60a5fa;
+    }
+
+    .mv-green {
+      color: var(--green);
+    }
+
+    .mv-yellow {
+      color: var(--yellow);
+    }
+
+    .mv-red {
+      color: var(--red);
+    }
+
+    .mv-teal {
+      color: var(--teal);
+    }
+
+    /* projection */
+    .proj-card {
+      margin: 10px 16px 0;
+      background: var(--teal-dim);
+      border: 1px solid rgba(56, 209, 196, 0.18);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .proj-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .proj-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+      margin-bottom: 3px;
+    }
+
+    .proj-value {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--teal);
+      letter-spacing: -0.02em;
+    }
+
+    .proj-sub {
+      font-size: 12px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    /* verdict card (replaces traffic light) */
+    .verdict-card {
+      margin: 10px 16px 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .verdict-icon {
+      font-size: 42px;
+      line-height: 1;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .verdict-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .verdict-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+
+    .vc-green {
+      border-color: rgba(52, 211, 153, .35);
+      background: var(--green-dim);
+    }
+
+    .vc-yellow {
+      border-color: rgba(251, 191, 36, .35);
+      background: var(--yellow-dim);
+    }
+
+    .vc-red {
+      border-color: rgba(248, 113, 113, .35);
+      background: var(--red-dim);
+    }
+
+    /* chart */
+    .chart-card {
+      margin: 10px 16px 0;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 220px;
+    }
+
+    .chart-eq {
+      font-size: 12px;
+      color: var(--text-2);
+      text-align: center;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* action row */
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin: 12px 16px 0;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 13px 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all .2s;
+      box-shadow: var(--shadow);
+    }
+
+    .action-btn:hover {
+      background: var(--bg-input);
+    }
+
+    .action-btn.copy-btn {
+      border-color: rgba(56, 209, 196, .3);
+      color: var(--teal);
+    }
+
+    .action-btn.copy-btn:hover {
+      background: var(--teal-dim);
+    }
+
+    .action-btn.reset-btn {
+      color: var(--text-2);
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: rgba(30, 44, 60, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 10px 20px;
+      color: #f0f6fd;
+      font-size: 14px;
+      font-weight: 600;
+      pointer-events: none;
+      z-index: 999;
+      white-space: nowrap;
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), opacity .3s;
+      opacity: 0;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 380px) {
+      .hdr h1 {
+        font-size: 18px;
+      }
+
+      .metrics-row {
+        gap: 5px;
+      }
+
+      .metric-value {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- Header -->
+    <div class="hdr">
+      <div class="hdr-top">
+        <div class="hdr-left">
+          <div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div>
+          <h1>eGFR <span>入组筛查工具</span></h1>
+        </div>
+
+        <div class="demo-btns"
+          style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; max-width: 220px;">
+          <button
+            style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid var(--green); background:var(--green-dim); color:var(--green); cursor:pointer;"
+            onclick="fillDemo(1)">PASS</button>
+          <button
+            style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid var(--red); background:var(--red-dim); color:var(--red); cursor:pointer;"
+            onclick="fillDemo(2)">FAIL</button>
+          <button
+            style="font-size:11px; padding:3px 6px; border-radius:6px; border:1px solid var(--yellow); background:var(--yellow-dim); color:var(--yellow); cursor:pointer;"
+            onclick="fillDemo(3)">REVIEW</button>
+          <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="切换白天/夜间模式"
+            style="margin:0; padding:2px 6px">☀️</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Subject Info -->
+    <div class="card">
+      <div class="card-title">受试者信息 Subject Info</div>
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label>筛选号 Screening No.&thinsp;<span style="color:var(--text-3);font-weight:400;">（选填）</span></label>
+          <div class="id-input-wrap">
+            <span class="id-prefix">CN</span>
+            <input type="text" class="sid-inp" id="sid" maxlength="10" autocomplete="off"
+              style="background:var(--bg-input);border:1px solid var(--border);border-radius:0 10px 10px 0;color:var(--text-1);font-family:inherit;font-size: 15px;font-weight:500;padding:10px 12px;outline:none;width:100%;transition:border-color .2s;" />
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>年龄 Age（岁）</label>
+          <input type="number" id="age" min="18" max="100" />
+        </div>
+        <div class="form-group">
+          <label>性别 Sex</label>
+          <div class="sex-toggle">
+            <div class="sex-btn active" id="btn-male" onclick="setSex('M')">♂ 男</div>
+            <div class="sex-btn" id="btn-female" onclick="setSex('F')">♀ 女</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCr History -->
+    <div class="card">
+      <div class="card-title">血肌酐历史记录 SCr History</div>
+      <table class="scr-table">
+        <thead>
+          <tr>
+            <th style="width:54%">日期 Date</th>
+            <th style="width:22%">SCr (μmol/L)</th>
+            <th style="width:16%">类型</th>
+            <th style="width:8%"></th>
+          </tr>
+        </thead>
+        <tbody id="scr-tbody"></tbody>
+      </table>
+      <button class="add-btn" onclick="addRow()">＋ 添加历史记录点</button>
+      <div class="hint">
+        <span>⚠️</span>
+        <span>筛选期肌酐为必填。历史记录至少需 <b>1 个时间点</b>，首末时间跨度须 <b>≥ 6 个月</b>。</span>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-banner" id="error-banner"></div>
+
+    <!-- Calculate -->
+    <div class="calc-wrap">
+      <button class="calc-btn" onclick="calculate()">
+        <span>计算 eGFR 斜率</span><span>→</span>
+      </button>
+    </div>
+
+    <!-- Result Panel -->
+    <div id="result-panel">
+
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-label">末次 eGFR</div>
+          <div class="metric-value mv-blue" id="r-last-egfr">—</div>
+          <div class="metric-unit">mL/min/1.73m²</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">年下降率</div>
+          <div class="metric-value" id="r-slope">—</div>
+          <div class="metric-unit">mL/min/yr</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">R² 拟合度</div>
+          <div class="metric-value mv-teal" id="r-r2">—</div>
+          <div class="metric-unit">线性拟合优度</div>
+        </div>
+      </div>
+
+      <!-- Verdict -->
+      <div class="verdict-card" id="verdict-card">
+        <div class="verdict-icon" id="verdict-icon">—</div>
+        <div>
+          <div class="verdict-title" id="verdict-title">—</div>
+          <div class="verdict-desc" id="verdict-desc">—</div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="card chart-card">
+        <div class="card-title">eGFR 时间趋势图</div>
+        <div class="chart-wrap"><canvas id="egfr-chart"></canvas></div>
+        <div class="chart-eq" id="chart-eq"></div>
+      </div>
+
+      <!-- Detail -->
+      <div class="card" id="detail-card" style="font-size: 13px;color:var(--text-2);line-height:1.9;"></div>
+
+      <!-- Actions -->
+      <div class="action-row">
+        <button class="action-btn copy-btn" onclick="copyReport()">📋 复制报告</button>
+        <button class="action-btn reset-btn" onclick="resetAll()">🔄 新建筛查</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── STATE ── */
+    let sex = 'M';
+    let chartInstance = null;
+    let isLight = false;
+
+    /* ── THEME ── */
+    function toggleTheme() {
+      isLight = !isLight;
+      document.body.classList.toggle('light', isLight);
+      document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+      if (chartInstance) rebuildChartColors();
+    }
+    function rebuildChartColors() {
+      /* just re-render with current data — handled by chart update */
+    }
+
+    /* ── INIT ── */
+    window.addEventListener('DOMContentLoaded', () => {
+      addRow('screening');
+      addRow('history');
+      addRow('history');
+      addRow('history');
+    });
+
+    /* ── SEX TOGGLE ── */
+    function setSex(s) {
+      sex = s;
+      document.getElementById('btn-male').classList.toggle('active', s === 'M');
+      document.getElementById('btn-female').classList.toggle('active', s === 'F');
+    }
+
+    /* ── SCR TABLE ── */
+    let rowId = 0;
+    function addRow(type) {
+      type = type || 'history';
+      const tbody = document.getElementById('scr-tbody');
+      const id = rowId++;
+      const isScr = (type === 'screening');
+      const tr = document.createElement('tr');
+      tr.dataset.id = id;
+      tr.dataset.type = type;
+      tr.innerHTML = `
+    <td>
+      <div class="date-triple">
+        <span class="yr-prefix">20</span><input type="text" inputmode="numeric" class="dt-year nav-inp dt-pad" data-id="${id}" data-min="0" data-max="99" placeholder="XX" />
+        <input type="text" inputmode="numeric" class="dt-mday dt-month nav-inp dt-pad" data-id="${id}" data-min="1" data-max="12" placeholder="MM" />
+        <input type="text" inputmode="numeric" class="dt-mday dt-day nav-inp dt-pad"   data-id="${id}" data-min="1" data-max="31" placeholder="DD" />
+        <button class="today-btn" onclick="setToday(${id})">今天</button>
+      </div>
+    </td>
+    <td><input type="number" class="scr-inp nav-inp" data-id="${id}" placeholder="μmol/L" min="10" max="2000" step="0.1" /></td>
+    <td class="center">
+      <span class="scr-badge ${isScr ? 'screening' : 'history'}">${isScr ? '筛选期' : '历史'}</span>
+    </td>
+    <td class="center">
+      ${isScr ? '' : `<button class="del-btn" onclick="delRow(${id})">✕</button>`}
+    </td>`;
+      if (isScr) tbody.insertBefore(tr, tbody.firstChild);
+      else tbody.appendChild(tr);
+    }
+
+    function delRow(id) {
+      const tr = document.querySelector(`#scr-tbody tr[data-id="${id}"]`);
+      if (tr) tr.remove();
+    }
+
+    function setToday(id) {
+      const t = new Date();
+      document.querySelector(`.dt-year[data-id="${id}"]`).value = String(t.getFullYear()).slice(2);
+      document.querySelector(`.dt-month[data-id="${id}"]`).value = String(t.getMonth() + 1).padStart(2, '0');
+      document.querySelector(`.dt-day[data-id="${id}"]`).value = String(t.getDate()).padStart(2, '0');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!e.target.classList.contains('nav-inp')) return;
+
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        const input = e.target;
+        const tr = input.closest('tr');
+        const inputsInTr = Array.from(tr.querySelectorAll('.nav-inp'));
+        const colIdx = inputsInTr.indexOf(input);
+
+        if (e.key === 'ArrowLeft') {
+          if (colIdx > 0) inputsInTr[colIdx - 1].focus();
+        } else if (e.key === 'ArrowRight') {
+          if (colIdx < inputsInTr.length - 1) inputsInTr[colIdx + 1].focus();
+        } else {
+          const rows = Array.from(document.querySelectorAll('#scr-tbody tr'));
+          const rowIdx = rows.indexOf(tr);
+          if (e.key === 'ArrowUp' && rowIdx > 0) {
+            const prevRowInputs = rows[rowIdx - 1].querySelectorAll('.nav-inp');
+            if (prevRowInputs[colIdx]) prevRowInputs[colIdx].focus();
+          } else if (e.key === 'ArrowDown' && rowIdx < rows.length - 1) {
+            const nextRowInputs = rows[rowIdx + 1].querySelectorAll('.nav-inp');
+            if (nextRowInputs[colIdx]) nextRowInputs[colIdx].focus();
+          }
+        }
+      }
+    });
+
+    /* ── CKD-EPI 2021 (Race-free, Inker et al. NEJM 2021) ── */
+    function calcEGFR(scrUmol, age, sex) {
+      const scr = scrUmol / 88.42;
+      const kappa = sex === 'F' ? 0.7 : 0.9;
+      const alpha = sex === 'F' ? -0.241 : -0.302;
+      const ratio = scr / kappa;
+      let egfr = 142 * Math.pow(Math.min(ratio, 1), alpha)
+        * Math.pow(Math.max(ratio, 1), -1.200)
+        * Math.pow(0.9938, age);
+      if (sex === 'F') egfr *= 1.012;
+      return +egfr.toFixed(1);
+    }
+
+    /* ── OLS ── */
+    function olsRegression(xs, ys) {
+      const n = xs.length;
+      const xM = xs.reduce((a, b) => a + b, 0) / n, yM = ys.reduce((a, b) => a + b, 0) / n;
+      let ssXY = 0, ssXX = 0, ssYY = 0;
+      for (let i = 0; i < n; i++) {
+        ssXY += (xs[i] - xM) * (ys[i] - yM);
+        ssXX += (xs[i] - xM) ** 2;
+        ssYY += (ys[i] - yM) ** 2;
+      }
+      const slope = ssXX === 0 ? 0 : ssXY / ssXX;
+      const intercept = yM - slope * xM;
+      const ssRes = ys.reduce((acc, y, i) => acc + (y - (slope * xs[i] + intercept)) ** 2, 0);
+      const r2 = ssYY === 0 ? 1 : 1 - ssRes / ssYY;
+      return { slope: +slope.toFixed(2), intercept: +intercept.toFixed(2), r2: +r2.toFixed(3) };
+    }
+
+    /* ── THRESHOLDS ── */
+    const THRESH = {
+      slopeMin: -5,   // fast-progresser cutoff  (mL/min/yr)
+      slopeMax: -1,   // no-progression cutoff
+      egfrMin: 30,   // enrollment lower bound   (mL/min/1.73m²)
+      egfrMax: 90,   // enrollment upper bound
+      r2Min: 0.50, // poor-fit warning
+    };
+
+    /* ── VERDICT ── */
+    function verdict(slope, lastEgfr, r2) {
+      if (r2 < THRESH.r2Min) {
+        return {
+          color: 'yellow', icon: '⚠️',
+          title: '需人工复核 · REVIEW',
+          desc: `肌酐历史轨迹波动较大（R²=${r2}），线性拟合度不足，可能存在急性肾损伤（AKI）或急性感染干扰。建议研究者人工复核历史记录，排除急性事件后重新评估。`
+        };
+      }
+      const slopeOk = slope >= THRESH.slopeMin && slope <= THRESH.slopeMax;
+      const egfrOk = lastEgfr >= THRESH.egfrMin && lastEgfr <= THRESH.egfrMax;
+      if (slopeOk && egfrOk) {
+        return {
+          color: 'green', icon: '✅',
+          title: '符合 · PASS',
+          desc: `年下降率 ${slope} mL/min/yr，末次 eGFR ${lastEgfr} mL/min/1.73m²，均在入组窗口内（斜率 -5～-1 mL/min/yr，eGFR 30–90）。`
+        };
+      }
+      let reason = [];
+      if (slope < THRESH.slopeMin) reason.push(`年下降率 ${slope} mL/min/yr（进展过快，阈值下限 ${THRESH.slopeMin}）`);
+      if (slope > THRESH.slopeMax) reason.push(`年下降率 ${slope} mL/min/yr（进展不足，阈值上限 ${THRESH.slopeMax}）`);
+      if (lastEgfr < THRESH.egfrMin) reason.push(`末次 eGFR ${lastEgfr}（低于入组下限 ${THRESH.egfrMin}）`);
+      if (lastEgfr > THRESH.egfrMax) reason.push(`末次 eGFR ${lastEgfr}（高于入组上限 ${THRESH.egfrMax}）`);
+      return {
+        color: 'red', icon: '❌',
+        title: '不符合 · FAIL',
+        desc: reason.join('；') + '。不符合方案入组标准。'
+      };
+    }
+
+    /* ── CALCULATE ── */
+    function calculate() {
+      hideError();
+      const age = parseInt(document.getElementById('age').value);
+      if (isNaN(age) || age < 18 || age > 100) return showError('请填写有效年龄（18–100 岁）。');
+
+      const rows = document.querySelectorAll('#scr-tbody tr');
+      const points = [];
+      let scrFound = false;
+
+      for (const row of rows) {
+        const y2 = row.querySelector('.dt-year').value.trim();
+        const mRaw = row.querySelector('.dt-month').value.trim();
+        const dRaw = row.querySelector('.dt-day').value.trim();
+        const cr = parseFloat(row.querySelector('.scr-inp').value);
+
+        const hasDate = y2 && mRaw && dRaw;
+        const hasCr = !isNaN(cr) && cr >= 10 && cr <= 2000;
+
+        if (!y2 && !mRaw && !dRaw && !cr) continue; // fully empty → skip
+
+        if (!hasDate) return showError('请检查所有记录的日期（年、月、日均需填写）。');
+        if (!hasCr) return showError('请检查 SCr 值是否合理（10–2000 μmol/L）。');
+
+        const y = '20' + String(y2).padStart(2, '0');
+        const m = String(mRaw).padStart(2, '0');
+        const d = String(dRaw).padStart(2, '0');
+        const ts = new Date(`${y}-${m}-${d}`).getTime();
+        if (isNaN(ts)) return showError(`日期格式有误：${y}年${m}月${d}日`);
+
+        points.push({ ts, cr, isScr: row.dataset.type === 'screening' });
+        if (row.dataset.type === 'screening') scrFound = true;
+      }
+
+      if (!scrFound) return showError('请填写筛选期的肌酐值与日期。');
+      if (points.length < 2) return showError('需要至少 2 个有效时间点（含筛选期）。');
+
+      const scrPoint = points.find(p => p.isScr);
+      for (const p of points) {
+        if (!p.isScr) {
+          const diffDays = (scrPoint.ts - p.ts) / 86400000;
+          if (diffDays < 0 || diffDays > 1096) {
+            return showError('历史肌酐记录必须在筛选前 36 个月内（不可晚于筛选期，也不可早于筛选前36个月）。');
+          }
+        }
+      }
+      const twoPoint = points.length === 2;
+
+      points.sort((a, b) => a.ts - b.ts);
+      const span = (points[points.length - 1].ts - points[0].ts) / 86400000;
+      if (span < 180) return showError(`首末时间点跨度仅 ${Math.round(span)} 天，需 ≥ 180 天（6 个月）。`);
+
+      const t0 = points[0].ts;
+      const xs = points.map(p => (p.ts - t0) / 31557600000);  // years
+      const ys = points.map(p => calcEGFR(p.cr, age, sex));
+      const labels = points.map(p => new Date(p.ts).toISOString().slice(0, 10));
+
+      const lastEgfr = ys[ys.length - 1];
+      const lastX = xs[xs.length - 1];
+      const { slope, intercept, r2 } = olsRegression(xs, ys);
+      const v = verdict(slope, lastEgfr, r2);
+
+      renderResults({ slope, lastEgfr, r2, v, xs, ys, labels, intercept, twoPoint });
+    }
+
+    /* ── RENDER ── */
+    function renderResults({ slope, lastEgfr, r2, v, xs, ys, labels, intercept, twoPoint }) {
+      document.getElementById('r-last-egfr').textContent = lastEgfr;
+      const sEl = document.getElementById('r-slope');
+      sEl.textContent = (slope > 0 ? '+' : '') + slope;
+      sEl.className = 'metric-value ' + (v.color === 'green' ? 'mv-green' : v.color === 'red' ? 'mv-red' : 'mv-yellow');
+      const r2El = document.getElementById('r-r2');
+      r2El.textContent = twoPoint ? '1.000*' : r2;
+      r2El.style.color = twoPoint ? 'var(--yellow)' : 'var(--teal)';
+      r2El.title = twoPoint ? '两点必然完美拟合，不代表数据质量' : '';
+
+      const vc = document.getElementById('verdict-card');
+      vc.className = 'verdict-card vc-' + v.color;
+      document.getElementById('verdict-icon').textContent = v.icon;
+      document.getElementById('verdict-title').textContent = v.title;
+      document.getElementById('verdict-desc').textContent = v.desc;
+      document.getElementById('verdict-title').style.color =
+        v.color === 'green' ? 'var(--green)' : v.color === 'red' ? 'var(--red)' : 'var(--yellow)';
+
+      renderChart(xs, ys, labels, slope, intercept);
+
+      const sStr = (slope >= 0 ? '+' : '') + slope;
+      document.getElementById('chart-eq').textContent =
+        `eGFR = ${sStr} × t + ${intercept.toFixed(1)}  （R² = ${r2}，t 单位：年）`;
+
+      const twoPointNote = twoPoint
+        ? `<br><span style="color:var(--yellow);font-weight:600;">⚠ 两点法提示：</span>当前仅有 2 个时间点，OLS 斜率即为两点连线斜率，R² 固定为 1.000（无统计意义）。建议补充更多历史肌酐记录以提高斜率可靠性，供 PI 参考评估。`
+        : '';
+      document.getElementById('detail-card').innerHTML =
+        `<b>算法说明</b>：CKD-EPI 2021（Race-free，Inker et al. <i>NEJM</i> 2021）| OLS 线性回归 | 入组区间：斜率 [${THRESH.slopeMin}, ${THRESH.slopeMax}] mL/min/yr，末次 eGFR ${THRESH.egfrMin}–${THRESH.egfrMax}，R² 预警阈值 &lt; ${THRESH.r2Min}。${twoPointNote}<br>
+    ⚠ <i>本工具仅供初筛参考，最终入排以研究方案（HRS-7535-307）为准，须经 PI 确认。</i>`;
+
+      const rp = document.getElementById('result-panel');
+      rp.style.display = 'block';
+      document.querySelector('.calc-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ── CHART ── */
+    function renderChart(xs, ys, labels, slope, intercept) {
+      if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+      const ctx = document.getElementById('egfr-chart').getContext('2d');
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const fitData = [
+        { x: labels[0], y: +(slope * xMin + intercept).toFixed(1) },
+        { x: labels[labels.length - 1], y: +(slope * xMax + intercept).toFixed(1) }
+      ];
+      const refMin = labels.map(l => ({ x: l, y: THRESH.egfrMin }));
+      const refMax = labels.map(l => ({ x: l, y: THRESH.egfrMax }));
+
+      chartInstance = new Chart(ctx, {
+        data: {
+          labels,
+          datasets: [
+            {
+              type: 'line', label: `下限 eGFR=${THRESH.egfrMin}`, data: refMin,
+              borderColor: 'rgba(248,113,113,0.55)', borderWidth: 1.5, borderDash: [5, 4],
+              pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
+            },
+            {
+              type: 'line', label: `上限 eGFR=${THRESH.egfrMax}`, data: refMax,
+              borderColor: 'rgba(148,163,184,0.35)', borderWidth: 1.2, borderDash: [3, 5],
+              pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
+            },
+            {
+              type: 'line', label: 'OLS 拟合线', data: fitData,
+              borderColor: '#fb923c', borderWidth: 2.5,
+              pointRadius: 0, fill: false, tension: 0, parsing: false, order: 2
+            },
+            {
+              type: 'scatter', label: 'eGFR 实测值',
+              data: ys.map((y, i) => ({ x: labels[i], y })),
+              backgroundColor: '#60a5fa', pointRadius: 7, pointHoverRadius: 9,
+              pointBorderColor: '#1e40af', pointBorderWidth: 1.5,
+              parsing: false, order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 14 } },
+            tooltip: {
+              backgroundColor: 'rgba(15,25,40,0.95)',
+              titleColor: '#f0f6fd', bodyColor: '#94a3b8',
+              borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+              callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y} mL/min/1.73m²` }
+            }
+          },
+          scales: {
+            x: {
+              type: 'category', ticks: { color: '#64748b', font: { size: 10 }, maxRotation: 30 },
+              grid: { color: 'rgba(255,255,255,0.04)' }
+            },
+            y: {
+              ticks: { color: '#64748b', font: { size: 10 } },
+              grid: { color: 'rgba(255,255,255,0.06)' },
+              title: { display: true, text: 'eGFR (mL/min/1.73m²)', color: '#475569', font: { size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    /* ── COPY REPORT ── */
+    function copyReport() {
+      const rawSid = document.getElementById('sid').value.trim();
+      const sid = rawSid ? 'CN' + rawSid : '未填写';
+      const egfr = document.getElementById('r-last-egfr').textContent;
+      const slope = document.getElementById('r-slope').textContent;
+      const r2 = document.getElementById('r-r2').textContent;
+      const title = document.getElementById('verdict-title').textContent;
+      const desc = document.getElementById('verdict-desc').textContent;
+      const now = new Date().toLocaleDateString('zh-CN');
+
+      const txt = [
+        `[eGFR 入组筛查报告] ${now}`,
+        `研究: HRS-7535-307 (RENEW-CKD)`,
+        `筛选号: ${sid}   性别: ${sex === 'M' ? '男' : '女'}   年龄: ${document.getElementById('age').value || '—'} 岁`,
+        `计算公式: CKD-EPI 2021 (Race-free, Inker et al. NEJM 2021)`,
+        `末次 eGFR: ${egfr}`,
+        `年下降率 (OLS): ${slope} mL/min/yr`,
+        `R² 拟合优度: ${r2}`,
+        `─────────────────────`,
+        `判定: ${title}`,
+        `说明: ${desc}`,
+        `─────────────────────`,
+        `* 本报告由筛查工具自动生成，仅供初筛参考，最终入排以研究方案为准，须经 PI 确认。`
+      ].join('\n');
+
+      navigator.clipboard.writeText(txt)
+        .then(() => showToast('报告已复制到剪贴板'))
+        .catch(() => {
+          const ta = document.createElement('textarea');
+          ta.value = txt; document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta);
+          showToast('报告已复制到剪贴板');
+        });
+    }
+
+    /* ── RESET ── */
+    function resetAll() {
+      document.getElementById('sid').value = '';
+      document.getElementById('age').value = '';
+      setSex('M');
+      document.getElementById('scr-tbody').innerHTML = '';
+      rowId = 0;
+      addRow('screening');
+      addRow('history'); addRow('history'); addRow('history');
+      document.getElementById('result-panel').style.display = 'none';
+      hideError();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ── UTILS ── */
+    function showError(msg) {
+      const el = document.getElementById('error-banner');
+      el.textContent = '⚠ ' + msg; el.style.display = 'block';
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function hideError() { document.getElementById('error-banner').style.display = 'none'; }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    /* ── DEMO AUTO-FILL ── */
+    function fillDemo(type) {
+      resetAll();
+      document.getElementById('age').value = 58;
+      document.getElementById('sid').value = Math.floor(Math.random() * 90000) + 10000;
+
+      const now = new Date();
+      const setRow = (tr, yearsAgo, crVal) => {
+        const d = new Date(now.getFullYear() - Math.floor(yearsAgo), now.getMonth() - Math.floor((yearsAgo % 1) * 12), now.getDate() - Math.floor(Math.random() * 15));
+        tr.querySelector('.dt-year').value = String(d.getFullYear()).slice(-2);
+        tr.querySelector('.dt-month').value = String(d.getMonth() + 1).padStart(2, '0');
+        tr.querySelector('.dt-day').value = String(d.getDate()).padStart(2, '0');
+        tr.querySelector('.scr-inp').value = crVal;
+      };
+
+      const rows = document.querySelectorAll('#scr-tbody tr');
+      if (type === 1) {
+        // PASS
+        setRow(rows[0], 0, 104);
+        setRow(rows[1], 1, 100);
+        setRow(rows[2], 2, 96);
+        setRow(rows[3], 2.9, 92);
+      } else if (type === 2) {
+        // FAIL (too fast)
+        setRow(rows[0], 0, 150);
+        setRow(rows[1], 1, 110);
+        setRow(rows[2], 2, 85);
+        setRow(rows[3], 2.9, 75);
+      } else if (type === 3) {
+        // REVIEW / BAD R2
+        setRow(rows[0], 0, 110);
+        setRow(rows[1], 0.5, 185); // AKI spike
+        setRow(rows[2], 1.5, 95);
+        setRow(rows[3], 2.5, 90);
+      }
+    }
+
+  </script>
+</body>
+
+</html>
