@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>eGFR 年下降率计算器 | RENEW-CKD HRS-7535-307</title>
-  <meta name="description" content="RENEW-CKD HRS-7535-307 eGFR年下降率计算器，CKD-EPI 2021 Race-free，CRC专用。" />
+  <title>eGFR 快速进展核查工具 | RENEW-CKD HRS-7535-307</title>
+  <meta name="description" content="HRS-7535-307 入选标准I4 eGFR快速进展证据核查工具，采用CKD-EPI 2021与OLS线性回归，仅在本机浏览器中计算。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
@@ -175,6 +175,21 @@
       font-weight: 600;
       letter-spacing: 0.03em;
       margin-top: 5px;
+    }
+
+    .scope-note {
+      margin: 12px 16px 0;
+      padding: 12px 14px;
+      border: 1px solid rgba(56, 209, 196, .28);
+      border-radius: 12px;
+      background: var(--teal-dim);
+      color: var(--text-2);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .scope-note strong {
+      color: var(--teal);
     }
 
     /* Theme toggle */
@@ -518,6 +533,29 @@
       color: var(--text-3);
     }
 
+    .quality-select {
+      width: 100%;
+      min-width: 76px;
+      padding: 6px 4px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      outline: none;
+      background: var(--bg-input);
+      color: var(--text-2);
+      font-family: inherit;
+      font-size: 11px;
+      box-shadow: var(--shadow);
+    }
+
+    .quality-select:focus {
+      border-color: var(--border-focus);
+    }
+
+    .quality-select option {
+      background: var(--bg-select);
+      color: var(--text-1);
+    }
+
     .scr-badge {
       font-size: 11px;
       font-weight: 700;
@@ -784,6 +822,42 @@
       background: var(--red-dim);
     }
 
+    .vc-teal {
+      border-color: rgba(56, 209, 196, .35);
+      background: var(--teal-dim);
+    }
+
+    .protocol-path-card {
+      margin: 10px 16px 0;
+      padding: 15px 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg-card);
+      box-shadow: var(--shadow);
+    }
+
+    .protocol-path-card span {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-3);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .protocol-path-card strong {
+      color: var(--teal);
+      font-size: 16px;
+    }
+
+    .protocol-path-card p {
+      margin-top: 6px;
+      color: var(--text-2);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
     /* chart */
     .chart-card {
       margin: 10px 16px 0;
@@ -870,9 +944,22 @@
       opacity: 1;
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 430px) {
       .hdr h1 {
         font-size: 18px;
+      }
+
+      .today-btn {
+        display: none;
+      }
+
+      .dt-year,
+      .dt-mday {
+        width: 38px;
+      }
+
+      .yr-prefix {
+        padding: 0 3px;
       }
 
       .metrics-row {
@@ -893,25 +980,30 @@
     <div class="hdr">
       <div class="hdr-top" style="flex-wrap: wrap; gap: 12px;">
         <div class="hdr-left" style="min-width: 100%;">
-          <div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div>
-          <h1>eGFR <span>年下降率计算器</span></h1>
+          <div class="hdr-badge">HRS-7535-307 · 入选标准 I4 · 本地计算</div>
+          <h1>eGFR <span>快速进展核查工具</span></h1>
         </div>
 
         <div class="demo-btns" style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
           <button
             style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--green); background:var(--green-dim); color:var(--green); cursor:pointer;"
-            onclick="fillDemo(1)">示例1</button>
+            onclick="fillDemo(1)">支持路径</button>
           <button
             style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--red); background:var(--red-dim); color:var(--red); cursor:pointer;"
-            onclick="fillDemo(2)">示例2</button>
+            onclick="fillDemo(2)">未支持</button>
           <button
             style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--yellow); background:var(--yellow-dim); color:var(--yellow); cursor:pointer;"
-            onclick="fillDemo(3)">示例3</button>
+            onclick="fillDemo(3)">需复核</button>
           <div style="flex-grow: 1;"></div>
           <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="切换白天/夜间模式"
             style="margin:0; padding:4px 10px; border-radius:8px;">🌙</button>
         </div>
       </div>
+    </div>
+
+    <div class="scope-note">
+      <strong>用途已更新：</strong>本工具仅用于当前方案入选标准 I4 中“eGFR 快速进展”的证据核查，
+      不用于主要终点评价，也不单独给出整体入组 PASS / FAIL。所有数据仅在当前浏览器中计算，不上传服务器。
     </div>
 
     <!-- Subject Info -->
@@ -929,7 +1021,7 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>年龄 Age（岁）</label>
+          <label>筛选时年龄 Age（岁）</label>
           <input type="number" id="age" min="18" max="100" />
         </div>
         <div class="form-group">
@@ -948,9 +1040,9 @@
       <table class="scr-table">
         <thead>
           <tr>
-            <th style="width:54%">日期 Date</th>
-            <th style="width:22%">SCr (μmol/L)</th>
-            <th style="width:16%">类型</th>
+            <th style="width:48%">日期 Date</th>
+            <th style="width:20%">SCr (μmol/L)</th>
+            <th style="width:24%">取点状态</th>
             <th style="width:8%"></th>
           </tr>
         </thead>
@@ -959,7 +1051,7 @@
       <button class="add-btn" onclick="addRow()">＋ 添加历史记录点</button>
       <div class="hint">
         <span>⚠️</span>
-        <span>筛选期肌酐为必填。历史记录至少需 <b>1 个时间点</b>，首末时间跨度须 <b>≥ 6 个月</b>。</span>
+        <span>筛选期肌酐为必填；至少需 <b>1 个筛选前 6–24 个月</b>的合格历史点。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。</span>
       </div>
     </div>
 
@@ -969,7 +1061,7 @@
     <!-- Calculate -->
     <div class="calc-wrap">
       <button class="calc-btn" onclick="calculate()">
-        <span>计算 eGFR 斜率</span><span>→</span>
+        <span>核查快速进展证据</span><span>→</span>
       </button>
     </div>
 
@@ -978,14 +1070,14 @@
 
       <div class="metrics-row">
         <div class="metric-card">
-          <div class="metric-label">末次 eGFR</div>
+          <div class="metric-label">筛选期 eGFR</div>
           <div class="metric-value mv-blue" id="r-last-egfr">—</div>
           <div class="metric-unit">mL/min/1.73m²</div>
         </div>
         <div class="metric-card">
-          <div class="metric-label">年下降率</div>
+          <div class="metric-label">年下降幅度</div>
           <div class="metric-value" id="r-slope">—</div>
-          <div class="metric-unit">mL/min/yr</div>
+          <div class="metric-unit">mL/min/1.73m²/年</div>
         </div>
         <div class="metric-card">
           <div class="metric-label">R² 拟合度</div>
@@ -1003,9 +1095,15 @@
         </div>
       </div>
 
+      <div class="protocol-path-card" id="protocol-path-card">
+        <span>I4 下一步核对</span>
+        <strong id="path-title">—</strong>
+        <p id="path-desc">—</p>
+      </div>
+
       <!-- Chart -->
       <div class="card chart-card">
-        <div class="card-title">eGFR 时间趋势图</div>
+        <div class="card-title">合格取点与 eGFR 拟合趋势</div>
         <div class="chart-wrap"><canvas id="egfr-chart"></canvas></div>
         <div class="chart-eq" id="chart-eq"></div>
       </div>
@@ -1015,8 +1113,8 @@
 
       <!-- Actions -->
       <div class="action-row">
-        <button class="action-btn copy-btn" onclick="copyReport()">📋 复制报告</button>
-        <button class="action-btn reset-btn" onclick="resetAll()">🔄 新建筛查</button>
+        <button class="action-btn copy-btn" onclick="copyReport()">📋 复制核查记录</button>
+        <button class="action-btn reset-btn" onclick="resetAll()">🔄 新建核查</button>
       </div>
     </div>
 
@@ -1028,6 +1126,7 @@
     let sex = 'M';
     let chartInstance = null;
     let isLight = true;
+    let lastReport = null;
 
     /* ── THEME ── */
     function toggleTheme() {
@@ -1076,7 +1175,15 @@
     </td>
     <td><input type="number" class="scr-inp nav-inp" data-id="${id}" placeholder="μmol/L" min="10" max="2000" step="0.1" /></td>
     <td class="center">
-      <span class="scr-badge ${isScr ? 'screening' : 'history'}">${isScr ? '筛选期' : '历史'}</span>
+      ${isScr
+          ? '<span class="scr-badge screening">筛选期·纳入</span>'
+          : `<select class="quality-select" aria-label="历史肌酐取点状态">
+              <option value="included">合格·纳入</option>
+              <option value="aki">AKI·排除</option>
+              <option value="infection">感染·排除</option>
+              <option value="medicine">药物影响·排除</option>
+              <option value="other">其他异常·排除</option>
+            </select>`}
     </td>
     <td class="center">
       ${isScr ? '' : `<button class="del-btn" onclick="delRow(${id})">✕</button>`}
@@ -1135,7 +1242,7 @@
         * Math.pow(Math.max(ratio, 1), -1.200)
         * Math.pow(0.9938, age);
       if (sex === 'F') egfr *= 1.012;
-      return +egfr.toFixed(1);
+      return egfr;
     }
 
     /* ── OLS ── */
@@ -1152,53 +1259,81 @@
       const intercept = yM - slope * xM;
       const ssRes = ys.reduce((acc, y, i) => acc + (y - (slope * xs[i] + intercept)) ** 2, 0);
       const r2 = ssYY === 0 ? 1 : 1 - ssRes / ssYY;
-      return { slope: +slope.toFixed(2), intercept: +intercept.toFixed(2), r2: +r2.toFixed(3) };
+      return { slope, intercept, r2 };
     }
-
-    /* ── THRESHOLDS ── */
-    const THRESH = {
-      slopeMin: -5,   // fast-progresser cutoff  (mL/min/yr)
-      slopeMax: -1,   // no-progression cutoff
-      egfrMin: 30,   // enrollment lower bound   (mL/min/1.73m²)
-      egfrMax: 90,   // enrollment upper bound
-      r2Min: 0.50, // poor-fit warning
+    /* ── CURRENT PROTOCOL RULES ── */
+    const PROTOCOL = {
+      rapidDecline: 5,       // strict threshold: annual decline > 5
+      egfrMin: 20,           // I4 lower bound, inclusive
+      egfrMax: 90,           // I4 upper bound, exclusive
+      r2Review: 0.50,        // quality flag only; not a protocol cutoff
+      historyMonths: 24,
+      anchorMonths: 6,
+    };
+    const YEAR_MS = 365.25 * 86400000;
+    const qualityText = {
+      included: '合格·纳入', aki: 'AKI·排除', infection: '感染·排除',
+      medicine: '药物影响·排除', other: '其他异常·排除'
     };
 
-    /* ── VERDICT ── */
-    function verdict(slope, lastEgfr, r2) {
-      if (r2 < THRESH.r2Min) {
+    function parseDateParts(y2, mRaw, dRaw) {
+      const year = 2000 + Number(y2), month = Number(mRaw), day = Number(dRaw);
+      if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return null;
+      const date = new Date(Date.UTC(year, month - 1, day));
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
+      return date;
+    }
+
+    function subtractMonths(timestamp, months) {
+      const date = new Date(timestamp);
+      const targetMonth = date.getUTCMonth() - months;
+      const lastDay = new Date(Date.UTC(date.getUTCFullYear(), targetMonth + 1, 0)).getUTCDate();
+      return Date.UTC(date.getUTCFullYear(), targetMonth, Math.min(date.getUTCDate(), lastDay));
+    }
+
+    function protocolVerdict(annualDecline, screeningEgfr, r2, twoPoint) {
+      const needsReview = twoPoint || r2 < PROTOCOL.r2Review;
+      if (screeningEgfr < PROTOCOL.egfrMin || screeningEgfr >= PROTOCOL.egfrMax) {
         return {
-          color: 'yellow', icon: '⚠️',
-          title: '需人工复核 · REVIEW',
-          desc: `肌酐历史轨迹波动较大（R²=${r2}），线性拟合度不足，可能存在急性肾损伤（AKI）或急性感染干扰。建议研究者人工复核历史记录，排除急性事件后重新评估。`
+          color: 'red', icon: '❗', rapid: annualDecline > PROTOCOL.rapidDecline,
+          title: '筛选期 eGFR 范围需核对',
+          desc: `本工具复算的筛选期 eGFR 为 ${screeningEgfr.toFixed(1)} mL/min/1.73m²，不在 I4 的 20 至 <90 范围。请同时核对原始检验报告；该提示不替代筛选及 V3 中心实验室正式判定。`
         };
       }
-      const slopeOk = slope >= THRESH.slopeMin && slope <= THRESH.slopeMax;
-      const egfrOk = lastEgfr >= THRESH.egfrMin && lastEgfr <= THRESH.egfrMax;
-      if (slopeOk && egfrOk) {
-        return {
-          color: 'green', icon: '✅',
-          title: '符合 · PASS',
-          desc: `年下降率 ${slope} mL/min/yr，末次 eGFR ${lastEgfr} mL/min/1.73m²，均在入组窗口内（斜率 -5～-1 mL/min/yr，eGFR 30–90）。`
+      if (annualDecline > PROTOCOL.rapidDecline) {
+        return needsReview ? {
+          color: 'yellow', icon: '⚠️', rapid: true,
+          title: '数值支持快速进展 · 需复核',
+          desc: `年下降幅度 ${annualDecline.toFixed(2)} >5 mL/min/1.73m²/年；但${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。请由研究者核实取点合格性后再用于 I4。`
+        } : {
+          color: 'green', icon: '✓', rapid: true,
+          title: '支持“eGFR 快速进展”路径',
+          desc: `合格取点估算的年下降幅度为 ${annualDecline.toFixed(2)} mL/min/1.73m²/年，严格大于方案阈值 5。仍须由研究者确认取点合格性，并继续核对筛选与随机前 eGFR/UACR。`
         };
       }
-      let reason = [];
-      if (slope < THRESH.slopeMin) reason.push(`年下降率 ${slope} mL/min/yr（进展过快，阈值下限 ${THRESH.slopeMin}）`);
-      if (slope > THRESH.slopeMax) reason.push(`年下降率 ${slope} mL/min/yr（进展不足，阈值上限 ${THRESH.slopeMax}）`);
-      if (lastEgfr < THRESH.egfrMin) reason.push(`末次 eGFR ${lastEgfr}（低于入组下限 ${THRESH.egfrMin}）`);
-      if (lastEgfr > THRESH.egfrMax) reason.push(`末次 eGFR ${lastEgfr}（高于入组上限 ${THRESH.egfrMax}）`);
-      return {
-        color: 'red', icon: '❌',
-        title: '不符合 · FAIL',
-        desc: reason.join('；') + '。不符合方案入组标准。'
+      return needsReview ? {
+        color: 'yellow', icon: '⚠️', rapid: false,
+        title: '暂未支持快速进展 · 需复核',
+        desc: `年下降幅度 ${annualDecline.toFixed(2)} 未严格大于 5，且${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。补充或核实合格历史记录后再确认路径。`
+      } : {
+        color: 'teal', icon: '→', rapid: false,
+        title: '未支持“eGFR 快速进展”路径',
+        desc: `年下降幅度 ${annualDecline.toFixed(2)} mL/min/1.73m²/年，未严格大于方案阈值 5。这不等同于入组不合格；仍可按 CVD 病史或随机日启药计划对应路径核对 I4。`
       };
+    }
+
+    function rapidPathUacr(egfr) {
+      if (egfr < PROTOCOL.egfrMin || egfr >= PROTOCOL.egfrMax) return null;
+      if (egfr < 45) return 'UACR 不设下限';
+      if (egfr < 60) return 'UACR ≥100 mg/g';
+      return 'UACR ≥300 mg/g';
     }
 
     /* ── CALCULATE ── */
     function calculate() {
       hideError();
-      const age = parseInt(document.getElementById('age').value);
-      if (isNaN(age) || age < 18 || age > 100) return showError('请填写有效年龄（18–100 岁）。');
+      const age = Number(document.getElementById('age').value);
+      if (!Number.isFinite(age) || age < 18 || age > 100) return showError('请填写有效的筛选时年龄（18–100 岁）。');
 
       const rows = document.querySelectorAll('#scr-tbody tr');
       const points = [];
@@ -1208,67 +1343,70 @@
         const y2 = row.querySelector('.dt-year').value.trim();
         const mRaw = row.querySelector('.dt-month').value.trim();
         const dRaw = row.querySelector('.dt-day').value.trim();
-        const cr = parseFloat(row.querySelector('.scr-inp').value);
+        const crRaw = row.querySelector('.scr-inp').value.trim();
+        const cr = Number(crRaw);
+        const isScr = row.dataset.type === 'screening';
+        const status = isScr ? 'included' : row.querySelector('.quality-select').value;
 
-        const hasDate = y2 && mRaw && dRaw;
-        const hasCr = !isNaN(cr) && cr >= 10 && cr <= 2000;
+        if (!y2 && !mRaw && !dRaw && !crRaw) continue;
+        if (!y2 || !mRaw || !dRaw) return showError('请检查所有已填写记录的日期（年、月、日均需填写）。');
+        if (!Number.isFinite(cr) || cr < 10 || cr > 2000) return showError('请检查 SCr 值是否合理（10–2000 μmol/L）。');
 
-        if (!y2 && !mRaw && !dRaw && !cr) continue; // fully empty → skip
-
-        if (!hasDate) return showError('请检查所有记录的日期（年、月、日均需填写）。');
-        if (!hasCr) return showError('请检查 SCr 值是否合理（10–2000 μmol/L）。');
-
-        const y = '20' + String(y2).padStart(2, '0');
-        const m = String(mRaw).padStart(2, '0');
-        const d = String(dRaw).padStart(2, '0');
-        const ts = new Date(`${y}-${m}-${d}`).getTime();
-        if (isNaN(ts)) return showError(`日期格式有误：${y}年${m}月${d}日`);
-
-        points.push({ ts, cr, isScr: row.dataset.type === 'screening' });
-        if (row.dataset.type === 'screening') scrFound = true;
+        const date = parseDateParts(y2, mRaw, dRaw);
+        if (!date) return showError(`日期格式有误：20${y2}-${mRaw}-${dRaw}`);
+        points.push({ ts: date.getTime(), date: date.toISOString().slice(0, 10), cr, isScr, status });
+        if (isScr) scrFound = true;
       }
 
       if (!scrFound) return showError('请填写筛选期的肌酐值与日期。');
-      if (points.length < 2) return showError('需要至少 2 个有效时间点（含筛选期）。');
+      const scrPoint = points.find(point => point.isScr);
+      if (scrPoint.ts > Date.now() + 86400000) return showError('筛选期日期不能晚于今天。');
 
-      const scrPoint = points.find(p => p.isScr);
-      for (const p of points) {
-        if (!p.isScr) {
-          const diffDays = (scrPoint.ts - p.ts) / 86400000;
-          if (diffDays < 0 || diffDays > 1096) {
-            return showError('历史肌酐记录必须在筛选前 36 个月内（不可晚于筛选期，也不可早于筛选前36个月）。');
-          }
-        }
+      const window24 = subtractMonths(scrPoint.ts, PROTOCOL.historyMonths);
+      const window6 = subtractMonths(scrPoint.ts, PROTOCOL.anchorMonths);
+      for (const point of points.filter(point => !point.isScr)) {
+        if (point.ts >= scrPoint.ts) return showError('历史肌酐日期必须早于筛选期日期。');
+        if (point.ts < window24) return showError('历史肌酐仅收集筛选前24个月内记录；请删除或更正时间窗外记录。');
       }
-      const twoPoint = points.length === 2;
 
-      points.sort((a, b) => a.ts - b.ts);
-      const span = (points[points.length - 1].ts - points[0].ts) / 86400000;
-      if (span < 180) return showError(`首末时间点跨度仅 ${Math.round(span)} 天，需 ≥ 180 天（6 个月）。`);
+      const included = points.filter(point => point.status === 'included');
+      const excluded = points.filter(point => point.status !== 'included');
+      const anchorFound = included.some(point => !point.isScr && point.ts >= window24 && point.ts <= window6);
+      if (!anchorFound) return showError('至少需要1个筛选前6–24个月的合格历史肌酐点。');
+      if (included.length < 2) return showError('至少需要2个合格取点（含筛选期）。');
 
-      const t0 = points[0].ts;
-      const xs = points.map(p => (p.ts - t0) / 31557600000);  // years
-      const ys = points.map(p => calcEGFR(p.cr, age, sex));
-      const labels = points.map(p => new Date(p.ts).toISOString().slice(0, 10));
+      included.sort((a, b) => a.ts - b.ts);
+      for (const point of included) {
+        const ageAtPoint = age + ((point.ts - scrPoint.ts) / YEAR_MS);
+        if (ageAtPoint < 18) return showError('存在受试者未满18岁时的历史取点，当前成人CKD-EPI公式不适用。');
+        point.age = ageAtPoint;
+        point.egfr = calcEGFR(point.cr, ageAtPoint, sex);
+      }
 
-      const lastEgfr = ys[ys.length - 1];
-      const lastX = xs[xs.length - 1];
+      const t0 = included[0].ts;
+      const xs = included.map(point => (point.ts - t0) / YEAR_MS);
+      const ys = included.map(point => point.egfr);
+      const labels = included.map(point => point.date);
+      const screeningEgfr = scrPoint.egfr;
       const { slope, intercept, r2 } = olsRegression(xs, ys);
-      const v = verdict(slope, lastEgfr, r2);
+      const annualDecline = -slope;
+      const twoPoint = included.length === 2;
+      const v = protocolVerdict(annualDecline, screeningEgfr, r2, twoPoint);
 
-      renderResults({ slope, lastEgfr, r2, v, xs, ys, labels, intercept, twoPoint });
+      lastReport = { age, sex, included, excluded, screeningEgfr, slope, annualDecline, r2, twoPoint, verdict: v };
+      renderResults({ slope, annualDecline, screeningEgfr, r2, v, xs, ys, labels, intercept, twoPoint, included, excluded });
     }
 
     /* ── RENDER ── */
-    function renderResults({ slope, lastEgfr, r2, v, xs, ys, labels, intercept, twoPoint }) {
-      document.getElementById('r-last-egfr').textContent = lastEgfr;
+    function renderResults({ slope, annualDecline, screeningEgfr, r2, v, xs, ys, labels, intercept, twoPoint, included, excluded }) {
+      document.getElementById('r-last-egfr').textContent = screeningEgfr.toFixed(1);
       const sEl = document.getElementById('r-slope');
-      sEl.textContent = (slope > 0 ? '+' : '') + slope;
-      sEl.className = 'metric-value ' + (v.color === 'green' ? 'mv-green' : v.color === 'red' ? 'mv-red' : 'mv-yellow');
+      sEl.textContent = annualDecline.toFixed(2);
+      sEl.className = 'metric-value ' + (v.color === 'green' ? 'mv-green' : v.color === 'red' ? 'mv-red' : v.color === 'yellow' ? 'mv-yellow' : 'mv-teal');
       const r2El = document.getElementById('r-r2');
-      r2El.textContent = twoPoint ? '1.000*' : r2;
-      r2El.style.color = twoPoint ? 'var(--yellow)' : 'var(--teal)';
-      r2El.title = twoPoint ? '两点必然完美拟合，不代表数据质量' : '';
+      r2El.textContent = twoPoint ? '1.000*' : r2.toFixed(3);
+      r2El.style.color = twoPoint || r2 < PROTOCOL.r2Review ? 'var(--yellow)' : 'var(--teal)';
+      r2El.title = twoPoint ? '两点必然完美拟合，不代表数据质量' : 'R²仅作轨迹质量提示，不是方案判定阈值';
 
       const vc = document.getElementById('verdict-card');
       vc.className = 'verdict-card vc-' + v.color;
@@ -1276,23 +1414,35 @@
       document.getElementById('verdict-title').textContent = v.title;
       document.getElementById('verdict-desc').textContent = v.desc;
       document.getElementById('verdict-title').style.color =
-        v.color === 'green' ? 'var(--green)' : v.color === 'red' ? 'var(--red)' : 'var(--yellow)';
+        v.color === 'green' ? 'var(--green)' : v.color === 'red' ? 'var(--red)' : v.color === 'yellow' ? 'var(--yellow)' : 'var(--teal)';
+
+      const uacrPath = rapidPathUacr(screeningEgfr);
+      document.getElementById('path-title').textContent = v.rapid && uacrPath
+        ? `若快速进展经确认：${uacrPath}`
+        : v.rapid ? '先核对筛选期 eGFR 范围' : '继续核对 CVD / 随机日启药路径';
+      document.getElementById('path-desc').textContent = v.rapid && uacrPath
+        ? '筛选与随机前均需满足该 eGFR/UACR 组合；随机前以 V3 中心实验室同日结果为准。'
+        : v.rapid
+          ? '快速进展不能抵消 eGFR 超出20至<90范围的问题。'
+          : '未支持快速进展不等于不符合I4；请按CVD病史或随机日是否计划启用RASi/SGLT2i/ns-MRA选择对应UACR阈值。';
 
       renderChart(xs, ys, labels, slope, intercept);
-
-      const sStr = (slope >= 0 ? '+' : '') + slope;
+      const sStr = (slope >= 0 ? '+' : '') + slope.toFixed(2);
       document.getElementById('chart-eq').textContent =
-        `eGFR = ${sStr} × t + ${intercept.toFixed(1)}  （R² = ${r2}，t 单位：年）`;
+        `eGFR 年变化率 ${sStr}；年下降幅度 ${annualDecline.toFixed(2)}（R² = ${r2.toFixed(3)}）`;
 
       const twoPointNote = twoPoint
-        ? `<br><span style="color:var(--yellow);font-weight:600;">⚠ 两点法提示：</span>当前仅有 2 个时间点，OLS 斜率即为两点连线斜率，R² 固定为 1.000（无统计意义）。建议补充更多历史肌酐记录以提高斜率可靠性，供 PI 参考评估。`
-        : '';
+        ? `<br><span style="color:var(--yellow);font-weight:600;">⚠ 两点法：</span>R²固定为1.000且无质量判别意义；建议补充筛选前24个月内的更多合格记录。`
+        : r2 < PROTOCOL.r2Review
+          ? `<br><span style="color:var(--yellow);font-weight:600;">⚠ 轨迹波动：</span>R²低于0.50仅触发人工复核，不是方案排除阈值。`
+          : '';
+      const exclusionNote = excluded.length
+        ? `<br><b>人工排除：</b>${excluded.map(point => `${point.date} SCr ${point.cr}（${qualityText[point.status]}）`).join('；')}。`
+        : '<br><b>人工排除：</b>无。';
       document.getElementById('detail-card').innerHTML =
-        `<b>算法说明</b>：CKD-EPI 2021（Race-free，Inker et al. <i>NEJM</i> 2021）| OLS 线性回归 | 入组区间：斜率 [${THRESH.slopeMin}, ${THRESH.slopeMax}] mL/min/yr，末次 eGFR ${THRESH.egfrMin}–${THRESH.egfrMax}，R² 预警阈值 &lt; ${THRESH.r2Min}。${twoPointNote}<br>
-    ⚠ <i>本工具仅供初筛参考，最终入排以研究方案（HRS-7535-307）为准，须经 PI 确认。</i>`;
+        `<b>方案口径</b>：筛选期结果 + 至少1个筛选前6–24个月合格血肌酐；鼓励纳入筛选前24个月内更多合格值。CKD-EPI 2021（血肌酐）换算 eGFR，OLS 估算年变化率；年下降幅度严格 &gt;5 才支持“快速进展”。<br><b>本次取点：</b>${included.length}个纳入，${excluded.length}个排除。${exclusionNote}${twoPointNote}<br>⚠ <i>AKI、感染或显著影响eGFR药物期间的检测值不应纳入。工具结果须经研究者确认，且不能单独判定整体入排。</i>`;
 
-      const rp = document.getElementById('result-panel');
-      rp.style.display = 'block';
+      document.getElementById('result-panel').style.display = 'block';
       document.querySelector('.calc-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -1305,22 +1455,31 @@
         { x: labels[0], y: +(slope * xMin + intercept).toFixed(1) },
         { x: labels[labels.length - 1], y: +(slope * xMax + intercept).toFixed(1) }
       ];
-      const refMin = labels.map(l => ({ x: l, y: THRESH.egfrMin }));
-      const refMax = labels.map(l => ({ x: l, y: THRESH.egfrMax }));
+      const refMin = labels.map(l => ({ x: l, y: PROTOCOL.egfrMin }));
+      const refMax = labels.map(l => ({ x: l, y: PROTOCOL.egfrMax }));
+      const rapidBoundary = [
+        { x: labels[0], y: +ys[0].toFixed(1) },
+        { x: labels[labels.length - 1], y: +(ys[0] - PROTOCOL.rapidDecline * (xMax - xMin)).toFixed(1) }
+      ];
 
       chartInstance = new Chart(ctx, {
         data: {
           labels,
           datasets: [
             {
-              type: 'line', label: `下限 eGFR=${THRESH.egfrMin}`, data: refMin,
+              type: 'line', label: `I4下限 eGFR=${PROTOCOL.egfrMin}`, data: refMin,
               borderColor: 'rgba(248,113,113,0.55)', borderWidth: 1.5, borderDash: [5, 4],
               pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
             },
             {
-              type: 'line', label: `上限 eGFR=${THRESH.egfrMax}`, data: refMax,
+              type: 'line', label: `I4上限 eGFR<${PROTOCOL.egfrMax}`, data: refMax,
               borderColor: 'rgba(148,163,184,0.35)', borderWidth: 1.2, borderDash: [3, 5],
               pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
+            },
+            {
+              type: 'line', label: '快速进展边界（-5/年）', data: rapidBoundary,
+              borderColor: 'rgba(248,113,113,0.75)', borderWidth: 1.6, borderDash: [7, 5],
+              pointRadius: 0, fill: false, tension: 0, parsing: false, order: 3
             },
             {
               type: 'line', label: 'OLS 拟合线', data: fitData,
@@ -1329,7 +1488,7 @@
             },
             {
               type: 'scatter', label: 'eGFR 实测值',
-              data: ys.map((y, i) => ({ x: labels[i], y })),
+              data: ys.map((y, i) => ({ x: labels[i], y: +y.toFixed(1) })),
               backgroundColor: '#60a5fa', pointRadius: 7, pointHoverRadius: 9,
               pointBorderColor: '#1e40af', pointBorderWidth: 1.5,
               parsing: false, order: 1
@@ -1365,28 +1524,40 @@
 
     /* ── COPY REPORT ── */
     function copyReport() {
+      if (!lastReport) return showToast('请先完成一次核查');
       const rawSid = document.getElementById('sid').value.trim();
       const sid = rawSid ? 'CN' + rawSid : '未填写';
-      const egfr = document.getElementById('r-last-egfr').textContent;
-      const slope = document.getElementById('r-slope').textContent;
-      const r2 = document.getElementById('r-r2').textContent;
       const title = document.getElementById('verdict-title').textContent;
       const desc = document.getElementById('verdict-desc').textContent;
+      const path = document.getElementById('path-title').textContent;
       const now = new Date().toLocaleDateString('zh-CN');
+      const includedLines = lastReport.included.map(point =>
+        `  - ${point.date}｜SCr ${point.cr} μmol/L｜eGFR ${point.egfr.toFixed(1)}｜纳入`
+      );
+      const excludedLines = lastReport.excluded.map(point =>
+        `  - ${point.date}｜SCr ${point.cr} μmol/L｜${qualityText[point.status]}`
+      );
 
       const txt = [
-        `[eGFR 入组筛查报告] ${now}`,
+        `[eGFR快速进展核查记录] ${now}`,
         `研究: HRS-7535-307 (RENEW-CKD)`,
         `筛选号: ${sid}   性别: ${sex === 'M' ? '男' : '女'}   年龄: ${document.getElementById('age').value || '—'} 岁`,
-        `计算公式: CKD-EPI 2021 (Race-free, Inker et al. NEJM 2021)`,
-        `末次 eGFR: ${egfr}`,
-        `年下降率 (OLS): ${slope} mL/min/yr`,
-        `R² 拟合优度: ${r2}`,
+        `方案口径: 筛选期 + 至少1个筛选前6–24个月合格点；年下降幅度严格>5`,
+        `计算: CKD-EPI 2021（血肌酐） + OLS`,
+        `筛选期复算 eGFR: ${lastReport.screeningEgfr.toFixed(1)} mL/min/1.73m²`,
+        `eGFR年变化率: ${lastReport.slope >= 0 ? '+' : ''}${lastReport.slope.toFixed(2)} mL/min/1.73m²/年`,
+        `年下降幅度: ${lastReport.annualDecline.toFixed(2)} mL/min/1.73m²/年`,
+        `R²: ${lastReport.twoPoint ? '1.000*（两点法，无质量判别意义）' : lastReport.r2.toFixed(3)}`,
+        `纳入取点 (${includedLines.length}):`,
+        ...includedLines,
+        `排除取点 (${excludedLines.length}):`,
+        ...(excludedLines.length ? excludedLines : ['  - 无']),
         `─────────────────────`,
-        `判定: ${title}`,
+        `核查结论: ${title}`,
         `说明: ${desc}`,
+        `I4下一步: ${path}`,
         `─────────────────────`,
-        `* 本报告由筛查工具自动生成，仅供初筛参考，最终入排以研究方案为准，须经 PI 确认。`
+        `* 本记录仅核查eGFR快速进展证据，不用于主要终点评价，不单独判定整体入排；最终须经研究者确认。`
       ].join('\n');
 
       navigator.clipboard.writeText(txt)
@@ -1409,6 +1580,7 @@
       addRow('screening');
       addRow('history'); addRow('history'); addRow('history');
       document.getElementById('result-panel').style.display = 'none';
+      lastReport = null;
       hideError();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1433,33 +1605,33 @@
       document.getElementById('sid').value = Math.floor(Math.random() * 90000) + 10000;
 
       const now = new Date();
-      const setRow = (tr, yearsAgo, crVal) => {
+      const setRow = (tr, yearsAgo, crVal, quality = 'included') => {
         const d = new Date(now.getFullYear() - Math.floor(yearsAgo), now.getMonth() - Math.floor((yearsAgo % 1) * 12), now.getDate() - Math.floor(Math.random() * 15));
         tr.querySelector('.dt-year').value = String(d.getFullYear()).slice(-2);
         tr.querySelector('.dt-month').value = String(d.getMonth() + 1).padStart(2, '0');
         tr.querySelector('.dt-day').value = String(d.getDate()).padStart(2, '0');
         tr.querySelector('.scr-inp').value = crVal;
+        if (tr.querySelector('.quality-select')) tr.querySelector('.quality-select').value = quality;
       };
-
       const rows = document.querySelectorAll('#scr-tbody tr');
       if (type === 1) {
-        // PASS
-        setRow(rows[0], 0, 104);
-        setRow(rows[1], 1, 100);
-        setRow(rows[2], 2, 96);
-        setRow(rows[3], 2.9, 92);
+        // Supports rapid-progression path
+        setRow(rows[0], 0, 128);
+        setRow(rows[1], 0.7, 116);
+        setRow(rows[2], 1.3, 107);
+        setRow(rows[3], 1.9, 98);
       } else if (type === 2) {
-        // FAIL (too fast)
-        setRow(rows[0], 0, 150);
-        setRow(rows[1], 1, 110);
-        setRow(rows[2], 2, 85);
-        setRow(rows[3], 2.9, 75);
+        // Does not support rapid-progression path
+        setRow(rows[0], 0, 108);
+        setRow(rows[1], 0.7, 105);
+        setRow(rows[2], 1.3, 102);
+        setRow(rows[3], 1.9, 99);
       } else if (type === 3) {
-        // REVIEW / BAD R2
-        setRow(rows[0], 0, 110);
-        setRow(rows[1], 0.5, 185); // AKI spike
-        setRow(rows[2], 1.5, 95);
-        setRow(rows[3], 2.5, 90);
+        // Review: volatile included trajectory, with one documented exclusion
+        setRow(rows[0], 0, 118);
+        setRow(rows[1], 0.7, 158, 'infection');
+        setRow(rows[2], 1.3, 96);
+        setRow(rows[3], 1.9, 112);
       }
     }
 
