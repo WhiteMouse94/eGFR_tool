@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>eGFR 快速进展核查工具 | RENEW-CKD HRS-7535-307</title>
-  <meta name="description" content="HRS-7535-307 入选标准I4 eGFR快速进展证据核查工具，采用CKD-EPI 2021与OLS线性回归，仅在本机浏览器中计算。" />
+  <meta name="description" content="HRS-7535-307 入选标准4 eGFR快速进展证据核查工具，采用CKD-EPI 2021与OLS线性回归，仅在本机浏览器中计算。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
@@ -1095,7 +1095,7 @@
       </div>
 
       <div class="protocol-path-card" id="protocol-path-card">
-        <span>I4 下一步核对</span>
+        <span>入选标准4 下一步核对</span>
         <strong id="path-title">—</strong>
         <p id="path-desc">—</p>
       </div>
@@ -1263,8 +1263,8 @@
     /* ── CURRENT PROTOCOL RULES ── */
     const PROTOCOL = {
       rapidDecline: 5,       // strict threshold: annual decline > 5
-      egfrMin: 20,           // I4 lower bound, inclusive
-      egfrMax: 90,           // I4 upper bound, exclusive
+      egfrMin: 20,           // inclusion criterion 4 lower bound, inclusive
+      egfrMax: 90,           // inclusion criterion 4 upper bound, exclusive
       r2Review: 0.50,        // quality flag only; not a protocol cutoff
       historyMonths: 24,
       anchorMonths: 6,
@@ -1296,14 +1296,14 @@
         return {
           color: 'red', icon: '❗', rapid: annualDecline > PROTOCOL.rapidDecline,
           title: '筛选期 eGFR 范围需核对',
-          desc: `本工具复算的筛选期 eGFR 为 ${screeningEgfr.toFixed(1)} mL/min/1.73m²，不在 I4 的 20 至 <90 范围。请同时核对原始检验报告；该提示不替代筛选及 V3 中心实验室正式判定。`
+          desc: `本工具复算的筛选期 eGFR 为 ${screeningEgfr.toFixed(1)} mL/min/1.73m²，不在入选标准4的20至<90范围。请同时核对原始检验报告；该提示不替代筛选及 V3 中心实验室正式判定。`
         };
       }
       if (annualDecline > PROTOCOL.rapidDecline) {
         return needsReview ? {
           color: 'yellow', icon: '⚠️', rapid: true,
           title: '数值支持快速进展 · 需复核',
-          desc: `年下降幅度 ${annualDecline.toFixed(2)} >5 mL/min/1.73m²/年；但${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。请由研究者核实取点合格性后再用于 I4。`
+          desc: `年下降幅度 ${annualDecline.toFixed(2)} >5 mL/min/1.73m²/年；但${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。请由研究者核实取点合格性后再用于入选标准4。`
         } : {
           color: 'green', icon: '✓', rapid: true,
           title: '支持“eGFR 快速进展”路径',
@@ -1317,7 +1317,7 @@
       } : {
         color: 'teal', icon: '→', rapid: false,
         title: '未支持“eGFR 快速进展”路径',
-        desc: `年下降幅度 ${annualDecline.toFixed(2)} mL/min/1.73m²/年，未严格大于方案阈值 5。这不等同于入组不合格；仍可按 CVD 病史或随机日启药计划对应路径核对 I4。`
+        desc: `年下降幅度 ${annualDecline.toFixed(2)} mL/min/1.73m²/年，未严格大于方案阈值 5。这不等同于入组不合格；仍可按 CVD 病史或随机日启药计划对应路径核对入选标准4。`
       };
     }
 
@@ -1423,7 +1423,7 @@
         ? '筛选与随机前均需满足该 eGFR/UACR 组合；随机前以 V3 中心实验室同日结果为准。'
         : v.rapid
           ? '快速进展不能抵消 eGFR 超出20至<90范围的问题。'
-          : '未支持快速进展不等于不符合I4；请按CVD病史或随机日是否计划启用RASi/SGLT2i/ns-MRA选择对应UACR阈值。';
+          : '未支持快速进展不等于不符合入选标准4；请按CVD病史或随机日是否计划启用RASi/SGLT2i/ns-MRA选择对应UACR阈值。';
 
       renderChart(xs, ys, labels, slope, intercept);
       const sStr = (slope >= 0 ? '+' : '') + slope.toFixed(2);
@@ -1466,12 +1466,12 @@
           labels,
           datasets: [
             {
-              type: 'line', label: `I4下限 eGFR=${PROTOCOL.egfrMin}`, data: refMin,
+              type: 'line', label: `入选标准4下限 eGFR=${PROTOCOL.egfrMin}`, data: refMin,
               borderColor: 'rgba(248,113,113,0.55)', borderWidth: 1.5, borderDash: [5, 4],
               pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
             },
             {
-              type: 'line', label: `I4上限 eGFR<${PROTOCOL.egfrMax}`, data: refMax,
+              type: 'line', label: `入选标准4上限 eGFR<${PROTOCOL.egfrMax}`, data: refMax,
               borderColor: 'rgba(148,163,184,0.35)', borderWidth: 1.2, borderDash: [3, 5],
               pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
             },
@@ -1554,7 +1554,7 @@
         `─────────────────────`,
         `核查结论: ${title}`,
         `说明: ${desc}`,
-        `I4下一步: ${path}`,
+        `入选标准4下一步: ${path}`,
         `─────────────────────`,
         `* 本记录仅核查eGFR快速进展证据，不用于主要终点评价，不单独判定整体入排；最终须经研究者确认。`
       ].join('\n');
