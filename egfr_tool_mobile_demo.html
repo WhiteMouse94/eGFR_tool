@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>eGFR 快速进展核查工具 | RENEW-CKD HRS-7535-307</title>
-  <meta name="description" content="HRS-7535-307 入选标准4 eGFR快速进展证据核查工具，采用CKD-EPI 2021与OLS线性回归，仅在本机浏览器中计算。" />
+  <meta name="description" content="HRS-7535-307 入选标准4 eGFR快速进展证据核查工具，采用CKD-EPI 2009与OLS线性回归，仅在本机浏览器中计算。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
@@ -1050,7 +1050,7 @@
       <button class="add-btn" onclick="addRow()">＋ 添加历史记录点</button>
       <div class="hint">
         <span>⚠️</span>
-        <span>筛选期肌酐可留空（预筛模式）。至少 <b>2 个不同日期</b>的合格点即可计算；若全部纳入点跨度不足6个月，仍会计算，但将警报且不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。</span>
+        <span>筛选期肌酐可留空（预筛模式）。至少 <b>2 个不同日期</b>的合格点即可计算；若全部纳入点跨度不足6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。</span>
       </div>
     </div>
 
@@ -1231,16 +1231,16 @@
       }
     });
 
-    /* ── CKD-EPI 2021 (Race-free, Inker et al. NEJM 2021) ── */
+    /* ── CKD-EPI 2009 (Levey et al. Ann Intern Med 2009; non-Black branch) ── */
     function calcEGFR(scrUmol, age, sex) {
-      const scr = scrUmol / 88.42;
+      const scr = scrUmol / 88.4;
       const kappa = sex === 'F' ? 0.7 : 0.9;
-      const alpha = sex === 'F' ? -0.241 : -0.302;
+      const alpha = sex === 'F' ? -0.329 : -0.411;
       const ratio = scr / kappa;
-      let egfr = 142 * Math.pow(Math.min(ratio, 1), alpha)
-        * Math.pow(Math.max(ratio, 1), -1.200)
-        * Math.pow(0.9938, age);
-      if (sex === 'F') egfr *= 1.012;
+      let egfr = 141 * Math.pow(Math.min(ratio, 1), alpha)
+        * Math.pow(Math.max(ratio, 1), -1.209)
+        * Math.pow(0.993, age);
+      if (sex === 'F') egfr *= 1.018;
       return egfr;
     }
 
@@ -1296,8 +1296,8 @@
       if (shortSpan) {
         return {
           color: 'yellow', icon: '⚠️', rapid: false,
-          title: '时间跨度不足6个月 · 判定不成立',
-          desc: `全部纳入点仅跨度 ${spanDays} 天。数学年变化率已计算，但短期波动可能被年化放大；无论数值是否大于5，均不能据此确认“eGFR 快速进展”。请补充跨度至少6个月的合格记录后重新核查。`
+          title: '跨度不足6个月 · 仅为估算，不可作为证据',
+          desc: `全部纳入点仅跨度 ${spanDays} 天。结果仅为估算，不可作为证据。短期波动可能被年化放大；无论数值是否大于5，均不能据此确认“eGFR 快速进展”。请补充跨度至少6个月的合格记录后重新核查。`
         };
       }
       if (referenceEgfr < PROTOCOL.egfrMin || referenceEgfr >= PROTOCOL.egfrMax) {
@@ -1338,6 +1338,8 @@
 
     /* ── CALCULATE ── */
     function calculate() {
+      lastReport = null;
+      document.getElementById('result-panel').style.display = 'none';
       hideError();
       const age = Number(document.getElementById('age').value);
       if (!Number.isFinite(age) || age < 18 || age > 100) return showError('请填写有效的当前/筛选时年龄（18–100 岁）。');
@@ -1427,7 +1429,7 @@
       const uacrPath = rapidPathUacr(referenceEgfr);
       if (shortSpan) {
         document.getElementById('path-title').textContent = '先补足至少6个月的合格取点跨度';
-        document.getElementById('path-desc').textContent = '本次仅显示数学年化结果；快速进展判定不成立，也不能据此选择快速进展对应的UACR路径。';
+        document.getElementById('path-desc').textContent = '本次结果仅为估算，不可作为证据；快速进展判定不成立，也不能据此选择快速进展对应的UACR路径。';
       } else {
         document.getElementById('path-title').textContent = v.rapid && uacrPath
           ? `${prescreen ? '预筛参考 · ' : ''}若快速进展经确认：${uacrPath}`
@@ -1442,7 +1444,7 @@
       renderChart(xs, ys, labels, slope, intercept);
       const sStr = (slope >= 0 ? '+' : '') + slope.toFixed(2);
       document.getElementById('chart-eq').textContent =
-        `eGFR 年变化率 ${sStr}；年下降幅度 ${annualDecline.toFixed(2)}（R² = ${r2.toFixed(3)}，跨度 ${spanDays} 天）`;
+        `${shortSpan ? '结果仅为估算，不可作为证据。' : ''}eGFR 年变化率 ${sStr}；年下降幅度 ${annualDecline.toFixed(2)}（R² = ${r2.toFixed(3)}，跨度 ${spanDays} 天）`;
 
       const twoPointNote = twoPoint
         ? `<br><span style="color:var(--yellow);font-weight:600;">⚠ 两点法：</span>R²固定为1.000且无质量判别意义；建议补充筛选前24个月内的更多合格记录。`
@@ -1453,10 +1455,10 @@
         ? `<br><b>人工排除：</b>${excluded.map(point => `${point.date} SCr ${point.cr}（${qualityText[point.status]}）`).join('；')}。`
         : '<br><b>人工排除：</b>无。';
       const shortSpanNote = shortSpan
-        ? '<br><span style="color:var(--yellow);font-weight:700;">⚠ 跨度不足6个月：仅显示数学结果，快速进展判定不成立。</span>'
+        ? '<br><span style="color:var(--yellow);font-weight:700;">⚠ 跨度不足6个月：结果仅为估算，不可作为证据，快速进展判定不成立。</span>'
         : '';
       document.getElementById('detail-card').innerHTML =
-        `<b>计算口径</b>：预筛时筛选期肌酐可留空，至少2个不同日期的合格点即可计算；正式用于入选标准4时仍应补充筛选期结果。CKD-EPI 2021（血肌酐）换算 eGFR，OLS 估算年变化率；只有取点跨度至少6个月且年下降幅度严格 &gt;5，才可支持“快速进展”。<br><b>本次模式：</b>${prescreen ? '预筛' : '筛选期'}；${included.length}个纳入，${excluded.length}个排除，跨度${spanDays}天。${exclusionNote}${shortSpanNote}${twoPointNote}<br>⚠ <i>AKI、感染或显著影响eGFR药物期间的检测值不应纳入。工具结果须经研究者确认，且不能单独判定整体入排。</i>`;
+        `<b>计算口径</b>：预筛时筛选期肌酐可留空，至少2个不同日期的合格点即可计算；正式用于入选标准4时仍应补充筛选期结果。CKD-EPI 2009（血肌酐，非黑人分支）换算 eGFR，OLS 估算年变化率；只有取点跨度至少6个月且年下降幅度严格 &gt;5，才可支持“快速进展”。<br><b>本次模式：</b>${prescreen ? '预筛' : '筛选期'}；${included.length}个纳入，${excluded.length}个排除，跨度${spanDays}天。${exclusionNote}${shortSpanNote}${twoPointNote}<br>⚠ <i>AKI、感染或显著影响eGFR药物期间的检测值不应纳入。工具结果须经研究者确认，且不能单独判定整体入排。</i>`;
 
       document.getElementById('result-panel').style.display = 'block';
       document.querySelector('.calc-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1560,11 +1562,11 @@
         `筛选号: ${sid}   性别: ${sex === 'M' ? '男' : '女'}   年龄: ${document.getElementById('age').value || '—'} 岁`,
         `计算口径: 至少2个不同日期合格点；跨度至少6个月且年下降幅度严格>5，才可支持快速进展`,
         `模式: ${lastReport.prescreen ? '预筛（筛选期肌酐未填写）' : '筛选期'}`,
-        `计算: CKD-EPI 2021（血肌酐） + OLS`,
+        `计算: CKD-EPI 2009（血肌酐，非黑人分支） + OLS`,
         `${lastReport.prescreen ? '预筛末次' : '筛选期'}复算 eGFR: ${lastReport.referenceEgfr.toFixed(1)} mL/min/1.73m²`,
         `eGFR年变化率: ${lastReport.slope >= 0 ? '+' : ''}${lastReport.slope.toFixed(2)} mL/min/1.73m²/年`,
         `年下降幅度: ${lastReport.annualDecline.toFixed(2)} mL/min/1.73m²/年`,
-        `取点跨度: ${lastReport.spanDays}天${lastReport.shortSpan ? '（不足6个月，快速进展判定不成立）' : ''}`,
+        `取点跨度: ${lastReport.spanDays}天${lastReport.shortSpan ? '（不足6个月：结果仅为估算，不可作为证据）' : ''}`,
         `R²: ${lastReport.twoPoint ? '1.000*（两点法，无质量判别意义）' : lastReport.r2.toFixed(3)}`,
         `纳入取点 (${includedLines.length}):`,
         ...includedLines,
