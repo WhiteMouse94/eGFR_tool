@@ -1145,10 +1145,10 @@
         document.getElementById('result-panel').style.display='none';document.getElementById('age').value=data.age;setSex(data.sex==='女'?'F':'M');
         document.getElementById('scr-tbody').replaceChildren();rowId=0;addRow('screening');
         for(const point of data.rows){
-          if(point.creatinine==null)continue;
+          if(point.creatinine==null&&point.egfr==null)continue;
           addRow('history');const row=document.getElementById('scr-tbody').lastElementChild;
           const [year,month,day]=(point.date||'').split('-');row.querySelector('.dt-year').value=year||'';row.querySelector('.dt-month').value=month||'';row.querySelector('.dt-day').value=day||'';
-          row.querySelector('.scr-inp').value=point.unit==='mg/dL'?Number(point.creatinine)*88.4:point.creatinine;
+          const valueInput=row.querySelector('.scr-inp');if(point.creatinine!=null){valueInput.value=point.unit==='mg/dL'?Number(point.creatinine)*88.4:point.creatinine;}else{valueInput.type='text';valueInput.value='eGFR '+point.egfr;valueInput.title='原已审直接eGFR点，按原取点保留；不是血肌酐值';}
           const select=row.querySelector('.quality-select');if(!point.included){const option=new Option(point.exclusionReason||'人工排除','locked-excluded');select.add(option);select.value='locked-excluded';}
           row.dataset.locked='true';row.querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
         }
