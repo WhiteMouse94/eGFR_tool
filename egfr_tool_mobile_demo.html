@@ -998,13 +998,10 @@
       </div>
     </div>
 
-    <div class="scope-note">
-      <strong>说明：</strong>本工具仅用于当前方案入选标准4 中判定“eGFR 快速进展”的辅助计算。
-    </div>
 
     <!-- Subject Info -->
     <div class="card">
-      <div class="card-title">受试者信息</div>
+      <div class="card-title">受试者信息 <span id="import-status" role="status" style="font-size:12px"></span></div>
       <div class="form-row">
         <div class="form-group" style="flex:2">
           <label>筛选号 <span style="color:var(--text-3);font-weight:400;">（选填）</span></label>
@@ -1012,6 +1009,7 @@
             <span class="id-prefix">CN</span>
             <input type="text" class="sid-inp" id="sid" maxlength="6" inputmode="numeric" pattern="[0-9]{6}" autocomplete="off"
               style="background:var(--bg-input);border:1px solid var(--border);border-radius:0 10px 10px 0;color:var(--text-1);font-family:inherit;font-size: 15px;font-weight:500;padding:10px 12px;outline:none;width:100%;transition:border-color .2s;" />
+            <button type="button" id="lookup-btn" onclick="lookupScreening()" style="margin-left:8px;padding:8px 14px;border:0;border-radius:8px;background:var(--teal);color:#fff;font:inherit;white-space:nowrap">查询</button>
           </div>
         </div>
       </div>
@@ -1115,6 +1113,9 @@
   <script>
     /* ── STATE ── */
     let sex = 'M';
+    let lockedBaseline = null;
+    let lockedResult = null;
+    let linkedRequestId = null;
     let chartInstance = null;
     let isLight = true;
     let lastReport = null;
@@ -1130,8 +1131,56 @@
       /* just re-render with current data — handled by chart update */
     }
 
+    async function lookupScreening() {
+      const digits=document.getElementById('sid').value.trim();
+      if(!/^\d{6}$/.test(digits))return showToast('请输入CN后面的6位数字');
+      if(!location.pathname.startsWith('/cra/calculator')) { location.href='https://14.103.73.237/cra/calculator/?sid='+digits;return; }
+      const button=document.getElementById('lookup-btn'),status=document.getElementById('import-status');button.disabled=true;status.textContent='查询中…';
+      try {
+        const response=await fetch('/cra/api/calculator/lookup?screening='+digits,{credentials:'same-origin',cache:'no-store'});
+        if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('请先登录后查询');
+        const data=await response.json();if(!response.ok)throw Error(response.status===404?'未查找到相关数据':data.error||'查询失败');
+        if(data.screeningId!=='CN'+digits||data.locked!==true)throw Error('返回的筛选号不匹配');
+        lockedBaseline=null;lockedResult=null;linkedRequestId=null;lastReport=null;
+        document.getElementById('result-panel').style.display='none';document.getElementById('age').value=data.age;setSex(data.sex==='女'?'F':'M');
+        document.getElementById('scr-tbody').replaceChildren();rowId=0;addRow('screening');
+        for(const point of data.rows){
+          if(point.creatinine==null)continue;
+          addRow('history');const row=document.getElementById('scr-tbody').lastElementChild;
+          const [year,month,day]=(point.date||'').split('-');row.querySelector('.dt-year').value=year||'';row.querySelector('.dt-month').value=month||'';row.querySelector('.dt-day').value=day||'';
+          row.querySelector('.scr-inp').value=point.unit==='mg/dL'?Number(point.creatinine)*88.4:point.creatinine;
+          const select=row.querySelector('.quality-select');if(!point.included){const option=new Option(point.exclusionReason||'人工排除','locked-excluded');select.add(option);select.value='locked-excluded';}
+          row.dataset.locked='true';row.querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
+        }
+        lockedBaseline=data;document.getElementById('age').disabled=true;document.querySelectorAll('.add-btn,.hdr-actions button').forEach(b=>b.disabled=true);document.querySelector('.calc-btn').disabled=false;
+        status.textContent='（'+data.initials+'）信息导入成功';status.style.color='var(--teal)';hideError();
+      } catch(error) {status.textContent=error.message;status.style.color='var(--red)';if(lockedBaseline)document.querySelector('.calc-btn').disabled=true;}
+      finally {button.disabled=false;}
+    }
+    async function calculateLinked() {
+      if(lockedResult)return showToast('本版判定已锁定；更正请重新查询并生成新版本');
+      if(document.getElementById('sid').value.trim()!==lockedBaseline.screeningId.slice(2))return showError('编号已变化，请重新查询');
+      const row=document.querySelector('#scr-tbody tr[data-type="screening"]');
+      const date=parseDateParts(row.querySelector('.dt-year').value,row.querySelector('.dt-month').value,row.querySelector('.dt-day').value),cr=Number(row.querySelector('.scr-inp').value);
+      if(!date||!Number.isFinite(cr)||cr<10||cr>2000)return showError('请补充筛选期日期和血肌酐值');
+      const button=document.querySelector('.calc-btn');button.disabled=true;linkedRequestId??=crypto.randomUUID();
+      try {
+        const response=await fetch('/cra/api/calculator/save',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest,date:date.toISOString().slice(0,10),creatinine:cr})});
+        if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('登录已过期，请重新登录');
+        const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');lockedResult=result;
+        const c=result.calculation,points=c.points||[],slope=c.state==='ready'?c.annualSlope:null;
+        document.getElementById('r-last-egfr').textContent=points.length?points[points.length-1].egfr.toFixed(1):'待核实';document.getElementById('r-slope').textContent=slope==null?'待核实':Number(slope.toFixed(2)).toFixed(2);document.getElementById('r-r2').textContent=c.state==='ready'?c.r2.toFixed(3):'—';
+        document.getElementById('verdict-title').textContent=result.conclusion.shortConclusion;document.getElementById('verdict-desc').textContent='本版自动计算结果已固定保存，正在回传阿里云；不等于正式筛选审核通过。';document.getElementById('verdict-icon').textContent='✓';
+        const detail=document.getElementById('detail-card');detail.style.whiteSpace='pre-wrap';detail.textContent=result.narrative;
+        if(c.state==='ready'&&points.length){const t0=Date.parse(points[0].date);renderChart(points.map(p=>(Date.parse(p.date)-t0)/YEAR_MS),points.map(p=>p.egfr),points.map(p=>p.date),c.annualSlope,c.intercept);}
+        document.getElementById('result-panel').style.display='block';row.querySelectorAll('input,button').forEach(e=>e.disabled=true);hideError();
+        let tries=0;const check=async()=>{if(lockedResult?.id!==result.id)return;try{const res=await fetch('/cra/api/calculator/result/'+result.id,{credentials:'same-origin',cache:'no-store'});const receipt=await res.json();if(receipt.delivery==='received'){document.getElementById('verdict-desc').textContent='本版自动计算结果已锁定，已回传阿里云；尚待医学审核。';return;}if(String(receipt.delivery).startsWith('rejected:')){document.getElementById('verdict-desc').textContent='本版已保存；回传待核查：'+receipt.delivery.slice(9);return;}}catch{}if(++tries<20)setTimeout(check,3000);};setTimeout(check,1500);
+      } catch(error){showError(error.message);button.disabled=false;}
+    }
+
     /* ── INIT ── */
     window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(()=>{const id=new URLSearchParams(location.search).get('sid');if(id&&/^\d{6}$/.test(id)){document.getElementById('sid').value=id;lookupScreening();}},0);
       addRow('screening');
       addRow('history');
       addRow('history');
@@ -1140,6 +1189,7 @@
 
     /* ── SEX TOGGLE ── */
     function setSex(s) {
+      if (lockedBaseline) return;
       sex = s;
       document.getElementById('btn-male').classList.toggle('active', s === 'M');
       document.getElementById('btn-female').classList.toggle('active', s === 'F');
@@ -1158,7 +1208,7 @@
       tr.innerHTML = `
     <td>
       <div class="date-triple">
-        <span class="yr-prefix">20</span><input type="text" inputmode="numeric" class="dt-year nav-inp dt-pad" data-id="${id}" data-min="0" data-max="99" placeholder="XX" />
+        <input type="text" inputmode="numeric" class="dt-year nav-inp" style="width:52px" data-id="${id}" data-min="1900" data-max="2100" placeholder="年" />
         <input type="text" inputmode="numeric" class="dt-mday dt-month nav-inp dt-pad" data-id="${id}" data-min="1" data-max="12" placeholder="MM" />
         <input type="text" inputmode="numeric" class="dt-mday dt-day nav-inp dt-pad"   data-id="${id}" data-min="1" data-max="31" placeholder="DD" />
         <button class="today-btn" onclick="setToday(${id})">今天</button>
@@ -1267,7 +1317,7 @@
     };
 
     function parseDateParts(y2, mRaw, dRaw) {
-      const year = 2000 + Number(y2), month = Number(mRaw), day = Number(dRaw);
+      const year = String(y2).length === 2 ? 2000 + Number(y2) : Number(y2), month = Number(mRaw), day = Number(dRaw);
       if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return null;
       const date = new Date(Date.UTC(year, month - 1, day));
       if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
@@ -1329,6 +1379,7 @@
 
     /* ── CALCULATE ── */
     function calculate() {
+      if (lockedBaseline) return calculateLinked();
       lastReport = null;
       document.getElementById('result-panel').style.display = 'none';
       hideError();
@@ -1352,7 +1403,7 @@
         if (!Number.isFinite(cr) || cr < 10 || cr > 2000) return showError('请检查 SCr 值是否合理（10–2000 μmol/L）。');
 
         const date = parseDateParts(y2, mRaw, dRaw);
-        if (!date) return showError(`日期格式有误：20${y2}-${mRaw}-${dRaw}`);
+        if (!date) return showError(`日期格式有误：${y2}-${mRaw}-${dRaw}`);
         points.push({ ts: date.getTime(), date: date.toISOString().slice(0, 10), cr, isScr, status });
       }
 
@@ -1519,6 +1570,7 @@
 
     /* ── COPY REPORT ── */
     function copyReport() {
+      if (lockedResult) return navigator.clipboard.writeText(lockedResult.narrative).then(()=>showToast('病历正文已复制')).catch(()=>showToast('请长按正文复制'));
       if (!lastReport) return showToast('请先完成一次核查');
       const txt = clinicalNarrative(lastReport);
 
@@ -1534,6 +1586,7 @@
 
     /* ── RESET ── */
     function resetAll() {
+      lockedBaseline=null;lockedResult=null;linkedRequestId=null;document.getElementById('age').disabled=false;document.getElementById('import-status').textContent='';document.querySelectorAll('.add-btn,.calc-btn,.hdr-actions button').forEach(b=>b.disabled=false);
       document.getElementById('sid').value = '';
       document.getElementById('age').value = '';
       setSex('M');
@@ -1569,7 +1622,7 @@
       const now = new Date();
       const setRow = (tr, yearsAgo, crVal, quality = 'included') => {
         const d = new Date(now.getFullYear() - Math.floor(yearsAgo), now.getMonth() - Math.floor((yearsAgo % 1) * 12), now.getDate() - Math.floor(Math.random() * 15));
-        tr.querySelector('.dt-year').value = String(d.getFullYear()).slice(-2);
+        tr.querySelector('.dt-year').value = String(d.getFullYear());
         tr.querySelector('.dt-month').value = String(d.getMonth() + 1).padStart(2, '0');
         tr.querySelector('.dt-day').value = String(d.getDate()).padStart(2, '0');
         tr.querySelector('.scr-inp').value = crVal;
