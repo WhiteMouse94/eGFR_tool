@@ -1149,7 +1149,7 @@
           addRow('history');const row=document.getElementById('scr-tbody').lastElementChild;
           const [year,month,day]=(point.date||'').split('-');row.querySelector('.dt-year').value=year||'';row.querySelector('.dt-month').value=month||'';row.querySelector('.dt-day').value=day||'';
           const valueInput=row.querySelector('.scr-inp');if(point.creatinine!=null){valueInput.value=point.unit==='mg/dL'?Number(point.creatinine)*88.4:point.creatinine;}else{valueInput.type='text';valueInput.value='eGFR '+point.egfr;valueInput.title='原已审直接eGFR点，按原取点保留；不是血肌酐值';}
-          const select=row.querySelector('.quality-select');if(!point.included){const option=new Option(point.exclusionReason||'人工排除','locked-excluded');select.add(option);select.value='locked-excluded';}
+          const select=row.querySelector('.quality-select');if(!point.included){const option=new Option(point.ruleExcluded?'直接eGFR·不纳入':point.exclusionReason||'人工排除','locked-excluded');select.add(option);select.value='locked-excluded';}
           row.dataset.locked='true';row.querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
         }
         lockedBaseline=data;document.getElementById('age').disabled=true;document.querySelectorAll('.add-btn,.hdr-actions button').forEach(b=>b.disabled=true);document.querySelector('.calc-btn').disabled=false;
