@@ -25,16 +25,19 @@ function run(rows){
   ctx.calculate();return result;
 }
 for(const screening of [true,false]){
-  const result=run([row(screening?'screening':'history','2026-08-25',150),row('history','2026-06-25',90)]);
+  const result=run([row(screening?'screening':'history','2026-08-25',150),row('history','2026-06-25',90),row('history','2026-07-25',110)]);
   assert.ok(Number.isFinite(result.slope));assert.equal(result.shortSpan,true);
   assert.equal(result.v.rapid,false);assert.equal(result.v.color,'yellow');
   assert.match(result.v.desc,/结果仅为估算，不可作为证据/);
 }
-for(const [date,shortSpan] of [['2026-02-25',false],['2026-02-26',true]]){
-  const result=run([row('history','2026-08-25',150),row('history',date,90)]);
+for(const [date,shortSpan] of [['2026-02-24',false],['2026-02-25',true],['2026-02-26',true]]){
+  const result=run([row('history','2026-08-25',150),row('history',date,90),row('history','2026-05-01',110)]);
   assert.equal(result.shortSpan,shortSpan);assert.equal(result.prescreen,true);
 }
-assert.throws(()=>run([row('history','2026-08-25',100),row('history','2026-08-25',120)]),/不同日期/);
+assert.throws(()=>run([row('history','2026-08-25',100),row('history','2026-08-25',120),row('history','2025-01-01',90)]),/同一天/);
+assert.throws(()=>run([row('history','2026-08-25',100),row('history','2025-08-25',90)]),/至少需要3/);
+const old=run([row('screening','2026-08-25',150),row('history','2018-08-25',90),row('history','2024-01-01',110)]);assert.equal(old.shortSpan,false);assert.equal(old.included.length,3);assert.match(ctx.clinicalNarrative({...old,verdict:old.v}),/纳入血肌酐/);
+assert.ok(!html.includes('id="protocol-path-card"'));
 assert.equal(ctx.protocolVerdict(5,50,.9,false).rapid,false);
 assert.equal(ctx.protocolVerdict(5.00001,50,.9,false).rapid,true);
 assert.doesNotMatch(html,/2021|0\.9938|1\.012|88\.42/);

@@ -6,10 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>eGFR 快速进展核查工具 | RENEW-CKD HRS-7535-307</title>
   <meta name="description" content="HRS-7535-307 入选标准4 eGFR快速进展证据核查工具，采用CKD-EPI 2009与OLS线性回归，仅在本机浏览器中计算。" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="vendor/chart.umd.min.js"></script>
   <style>
     *,
     *::before,
@@ -981,7 +978,7 @@
       <div class="hdr-top" style="flex-wrap: wrap; gap: 12px;">
         <div class="hdr-left" style="min-width: 100%;">
           <div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div>
-          <h1>eGFR <span>年下降率计算器</span></h1>
+          <h1>eGFR <span>年变化率计算器</span></h1>
         </div>
 
         <div class="demo-btns" style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
@@ -1007,24 +1004,24 @@
 
     <!-- Subject Info -->
     <div class="card">
-      <div class="card-title">受试者信息 Subject Info</div>
+      <div class="card-title">受试者信息</div>
       <div class="form-row">
         <div class="form-group" style="flex:2">
-          <label>筛选号 Screening No.&thinsp;<span style="color:var(--text-3);font-weight:400;">（选填）</span></label>
+          <label>筛选号 <span style="color:var(--text-3);font-weight:400;">（选填）</span></label>
           <div class="id-input-wrap">
             <span class="id-prefix">CN</span>
-            <input type="text" class="sid-inp" id="sid" maxlength="10" autocomplete="off"
+            <input type="text" class="sid-inp" id="sid" maxlength="6" inputmode="numeric" pattern="[0-9]{6}" autocomplete="off"
               style="background:var(--bg-input);border:1px solid var(--border);border-radius:0 10px 10px 0;color:var(--text-1);font-family:inherit;font-size: 15px;font-weight:500;padding:10px 12px;outline:none;width:100%;transition:border-color .2s;" />
           </div>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>当前/筛选时年龄 Age（岁）</label>
+          <label>当前/筛选时年龄（岁）</label>
           <input type="number" id="age" min="18" max="100" />
         </div>
         <div class="form-group">
-          <label>性别 Sex</label>
+          <label>性别</label>
           <div class="sex-toggle">
             <div class="sex-btn active" id="btn-male" onclick="setSex('M')">♂ 男</div>
             <div class="sex-btn" id="btn-female" onclick="setSex('F')">♀ 女</div>
@@ -1035,12 +1032,12 @@
 
     <!-- SCr History -->
     <div class="card">
-      <div class="card-title">血肌酐历史记录 SCr History</div>
+      <div class="card-title">血肌酐历史记录</div>
       <table class="scr-table">
         <thead>
           <tr>
-            <th style="width:48%">日期 Date</th>
-            <th style="width:20%">SCr (μmol/L)</th>
+            <th style="width:48%">日期</th>
+            <th style="width:20%">血肌酐 (μmol/L)</th>
             <th style="width:24%">取点状态</th>
             <th style="width:8%"></th>
           </tr>
@@ -1050,7 +1047,7 @@
       <button class="add-btn" onclick="addRow()">＋ 添加历史记录点</button>
       <div class="hint">
         <span>⚠️</span>
-        <span>筛选期肌酐可留空（预筛模式）。至少 <b>2 个不同日期</b>的合格点即可计算；若全部纳入点跨度不足6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。</span>
+        <span>筛选期肌酐可留空（预筛模式）。不设历史时间上限，至少 <b>3 个不同日期</b>的合格点；最早至最晚必须严格超过6个日历月。若跨度未超过6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。</span>
       </div>
     </div>
 
@@ -1074,7 +1071,7 @@
           <div class="metric-unit">mL/min/1.73m²</div>
         </div>
         <div class="metric-card">
-          <div class="metric-label">年下降幅度</div>
+          <div class="metric-label">eGFR年变化率</div>
           <div class="metric-value" id="r-slope">—</div>
           <div class="metric-unit">mL/min/1.73m²/年</div>
         </div>
@@ -1094,11 +1091,6 @@
         </div>
       </div>
 
-      <div class="protocol-path-card" id="protocol-path-card">
-        <span>入选标准4 下一步核对</span>
-        <strong id="path-title">—</strong>
-        <p id="path-desc">—</p>
-      </div>
 
       <!-- Chart -->
       <div class="card chart-card">
@@ -1112,7 +1104,7 @@
 
       <!-- Actions -->
       <div class="action-row">
-        <button class="action-btn copy-btn" onclick="copyReport()">📋 复制核查记录</button>
+        <button class="action-btn copy-btn" onclick="copyReport()">📋 复制病历正文</button>
         <button class="action-btn reset-btn" onclick="resetAll()">🔄 新建核查</button>
       </div>
     </div>
@@ -1266,7 +1258,6 @@
       egfrMin: 20,           // inclusion criterion 4 lower bound, inclusive
       egfrMax: 90,           // inclusion criterion 4 upper bound, exclusive
       r2Review: 0.50,        // quality flag only; not a protocol cutoff
-      historyMonths: 24,
       anchorMonths: 6,
     };
     const YEAR_MS = 365.25 * 86400000;
@@ -1296,8 +1287,8 @@
       if (shortSpan) {
         return {
           color: 'yellow', icon: '⚠️', rapid: false,
-          title: '跨度不足6个月 · 仅为估算，不可作为证据',
-          desc: `全部纳入点仅跨度 ${spanDays} 天。结果仅为估算，不可作为证据。短期波动可能被年化放大；无论数值是否大于5，均不能据此确认“eGFR 快速进展”。请补充跨度至少6个月的合格记录后重新核查。`
+          title: '跨度未超过6个月 · 仅为估算，不可作为证据',
+          desc: `全部纳入点仅跨度 ${spanDays} 天。结果仅为估算，不可作为证据。短期波动可能被年化放大；无论数值是否大于5，均不能据此确认“eGFR 快速进展”。请补充跨度严格超过6个月的合格记录后重新核查。`
         };
       }
       if (referenceEgfr < PROTOCOL.egfrMin || referenceEgfr >= PROTOCOL.egfrMax) {
@@ -1311,21 +1302,21 @@
         return needsReview ? {
           color: 'yellow', icon: '⚠️', rapid: true,
           title: `${prescreen ? '预筛数值' : '数值'}支持快速进展 · 需复核`,
-          desc: `年下降幅度 ${annualDecline.toFixed(2)} >5 mL/min/1.73m²/年；但${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。请由研究者核实取点合格性${prescreen ? '并在筛选期补充结果' : ''}后再用于入选标准4。`
+          desc: `eGFR年变化率 ${(-annualDecline).toFixed(2)} <−5 mL/min/1.73m²/年；但${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。请由研究者核实取点合格性${prescreen ? '并在筛选期补充结果' : ''}后再用于入选标准4。`
         } : {
           color: 'green', icon: '✓', rapid: true,
           title: `${prescreen ? '预筛趋势' : ''}支持“eGFR 快速进展”路径`,
-          desc: `合格取点估算的年下降幅度为 ${annualDecline.toFixed(2)} mL/min/1.73m²/年，严格大于方案阈值 5。仍须由研究者确认取点合格性${prescreen ? '、在筛选期补充结果' : ''}，并继续核对筛选与随机前 eGFR/UACR。`
+          desc: `合格取点估算的eGFR年变化率为 ${(-annualDecline).toFixed(2)} mL/min/1.73m²/年，严格低于阈值 −5。仍须由研究者确认取点合格性${prescreen ? '、在筛选期补充结果' : ''}，并继续核对筛选与随机前 eGFR/UACR。`
         };
       }
       return needsReview ? {
         color: 'yellow', icon: '⚠️', rapid: false,
         title: `${prescreen ? '预筛' : ''}暂未支持快速进展 · 需复核`,
-        desc: `年下降幅度 ${annualDecline.toFixed(2)} 未严格大于 5，且${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。补充或核实合格历史记录后再确认路径。`
+        desc: `eGFR年变化率 ${(-annualDecline).toFixed(2)} 未严格低于 −5，且${twoPoint ? '当前仅有2个纳入点' : `拟合波动较大（R²=${r2.toFixed(3)}）`}。补充或核实合格历史记录后再确认路径。`
       } : {
         color: 'teal', icon: '→', rapid: false,
         title: `${prescreen ? '预筛趋势' : ''}未支持“eGFR 快速进展”路径`,
-        desc: `年下降幅度 ${annualDecline.toFixed(2)} mL/min/1.73m²/年，未严格大于方案阈值 5。这不等同于入组不合格；仍可按 CVD 病史或随机日启药计划对应路径核对入选标准4。`
+        desc: `eGFR年变化率 ${(-annualDecline).toFixed(2)} mL/min/1.73m²/年，未严格低于阈值 −5。这不等同于入组不合格；仍可按 CVD 病史或随机日启药计划对应路径核对入选标准4。`
       };
     }
 
@@ -1367,8 +1358,8 @@
 
       const included = points.filter(point => point.status === 'included');
       const excluded = points.filter(point => point.status !== 'included');
-      if (included.length < 2) return showError('至少需要2个合格取点；筛选期肌酐可留空。');
-      if (new Set(included.map(point => point.date)).size < 2) return showError('至少需要2个不同日期的合格取点。');
+      if (included.length < 3) return showError('至少需要3个不同日期的合格取点；筛选期肌酐可留空。');
+      if (new Set(included.map(point => point.date)).size !== included.length) return showError('同一天只能纳入一个合格取点，请核对重复日期。');
 
       included.sort((a, b) => a.ts - b.ts);
       const scrPoint = points.find(point => point.isScr);
@@ -1376,10 +1367,8 @@
       const referencePoint = scrPoint || included[included.length - 1];
       if (referencePoint.ts > Date.now() + 86400000) return showError('参考点日期不能晚于今天。');
 
-      const window24 = subtractMonths(referencePoint.ts, PROTOCOL.historyMonths);
       for (const point of points) {
         if (scrPoint && !point.isScr && point.ts >= scrPoint.ts) return showError('历史肌酐日期必须早于筛选期日期。');
-        if (point !== referencePoint && point.ts < window24) return showError('仅纳入参考点前24个月内记录；请删除或更正时间窗外记录。');
       }
 
       const ageReferenceTs = scrPoint ? scrPoint.ts : Date.now();
@@ -1399,7 +1388,10 @@
       const annualDecline = -slope;
       const twoPoint = included.length === 2;
       const spanDays = Math.round((included[included.length - 1].ts - included[0].ts) / 86400000);
-      const shortSpan = included[0].ts > subtractMonths(included[included.length - 1].ts, PROTOCOL.anchorMonths);
+      const firstDate = new Date(included[0].ts);
+      const monthEnd = new Date(Date.UTC(firstDate.getUTCFullYear(), firstDate.getUTCMonth()+7, 0)).getUTCDate();
+      const sixMonthBoundary = Date.UTC(firstDate.getUTCFullYear(), firstDate.getUTCMonth()+6, Math.min(firstDate.getUTCDate(), monthEnd));
+      const shortSpan = included[included.length-1].ts <= sixMonthBoundary;
       const v = protocolVerdict(annualDecline, referenceEgfr, r2, twoPoint, { shortSpan, prescreen, spanDays });
 
       lastReport = { age, sex, included, excluded, referenceEgfr, slope, annualDecline, r2, twoPoint, shortSpan, prescreen, spanDays, verdict: v };
@@ -1411,7 +1403,7 @@
       document.getElementById('r-reference-label').textContent = prescreen ? '预筛末次 eGFR' : '筛选期 eGFR';
       document.getElementById('r-last-egfr').textContent = referenceEgfr.toFixed(1);
       const sEl = document.getElementById('r-slope');
-      sEl.textContent = annualDecline.toFixed(2);
+      sEl.textContent = (slope>0?'+':'') + Number(slope.toFixed(2)).toFixed(2);
       sEl.className = 'metric-value ' + (v.color === 'green' ? 'mv-green' : v.color === 'red' ? 'mv-red' : v.color === 'yellow' ? 'mv-yellow' : 'mv-teal');
       const r2El = document.getElementById('r-r2');
       r2El.textContent = twoPoint ? '1.000*' : r2.toFixed(3);
@@ -1426,39 +1418,14 @@
       document.getElementById('verdict-title').style.color =
         v.color === 'green' ? 'var(--green)' : v.color === 'red' ? 'var(--red)' : v.color === 'yellow' ? 'var(--yellow)' : 'var(--teal)';
 
-      const uacrPath = rapidPathUacr(referenceEgfr);
-      if (shortSpan) {
-        document.getElementById('path-title').textContent = '先补足至少6个月的合格取点跨度';
-        document.getElementById('path-desc').textContent = '本次结果仅为估算，不可作为证据；快速进展判定不成立，也不能据此选择快速进展对应的UACR路径。';
-      } else {
-        document.getElementById('path-title').textContent = v.rapid && uacrPath
-          ? `${prescreen ? '预筛参考 · ' : ''}若快速进展经确认：${uacrPath}`
-          : v.rapid ? '先核对筛选期 eGFR 范围' : '继续核对 CVD / 随机日启药路径';
-        document.getElementById('path-desc').textContent = v.rapid && uacrPath
-          ? `${prescreen ? '当前为预筛估算，需补充筛选期结果。' : ''}筛选与随机前均需满足该 eGFR/UACR 组合；随机前以 V3 中心实验室同日结果为准。`
-          : v.rapid
-            ? '快速进展不能抵消 eGFR 超出20至<90范围的问题。'
-            : '未支持快速进展不等于不符合入选标准4；请按CVD病史或随机日是否计划启用RASi/SGLT2i/ns-MRA选择对应UACR阈值。';
-      }
-
       renderChart(xs, ys, labels, slope, intercept);
       const sStr = (slope >= 0 ? '+' : '') + slope.toFixed(2);
       document.getElementById('chart-eq').textContent =
-        `${shortSpan ? '结果仅为估算，不可作为证据。' : ''}eGFR 年变化率 ${sStr}；年下降幅度 ${annualDecline.toFixed(2)}（R² = ${r2.toFixed(3)}，跨度 ${spanDays} 天）`;
+        `${shortSpan ? '结果仅为估算，不可作为证据。' : ''}eGFR 年变化率 ${sStr}（R² = ${r2.toFixed(3)}，跨度 ${spanDays} 天）`;
 
-      const twoPointNote = twoPoint
-        ? `<br><span style="color:var(--yellow);font-weight:600;">⚠ 两点法：</span>R²固定为1.000且无质量判别意义；建议补充筛选前24个月内的更多合格记录。`
-        : r2 < PROTOCOL.r2Review
-          ? `<br><span style="color:var(--yellow);font-weight:600;">⚠ 轨迹波动：</span>R²低于0.50仅触发人工复核，不是方案排除阈值。`
-          : '';
-      const exclusionNote = excluded.length
-        ? `<br><b>人工排除：</b>${excluded.map(point => `${point.date} SCr ${point.cr}（${qualityText[point.status]}）`).join('；')}。`
-        : '<br><b>人工排除：</b>无。';
-      const shortSpanNote = shortSpan
-        ? '<br><span style="color:var(--yellow);font-weight:700;">⚠ 跨度不足6个月：结果仅为估算，不可作为证据，快速进展判定不成立。</span>'
-        : '';
-      document.getElementById('detail-card').innerHTML =
-        `<b>计算口径</b>：预筛时筛选期肌酐可留空，至少2个不同日期的合格点即可计算；正式用于入选标准4时仍应补充筛选期结果。CKD-EPI 2009（血肌酐，非黑人分支）换算 eGFR，OLS 估算年变化率；只有取点跨度至少6个月且年下降幅度严格 &gt;5，才可支持“快速进展”。<br><b>本次模式：</b>${prescreen ? '预筛' : '筛选期'}；${included.length}个纳入，${excluded.length}个排除，跨度${spanDays}天。${exclusionNote}${shortSpanNote}${twoPointNote}<br>⚠ <i>AKI、感染或显著影响eGFR药物期间的检测值不应纳入。工具结果须经研究者确认，且不能单独判定整体入排。</i>`;
+      const detail = document.getElementById('detail-card');
+      detail.style.whiteSpace = 'pre-wrap';
+      detail.textContent = clinicalNarrative(lastReport);
 
       document.getElementById('result-panel').style.display = 'block';
       document.querySelector('.calc-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1540,45 +1507,20 @@
       });
     }
 
+    function clinicalNarrative(r) {
+      const values = r.included.map(p => `${p.cr}（${p.date}）`).join('；');
+      const rate = Number(r.slope.toFixed(2));
+      const conclusion = r.shortSpan ? '取点跨度未超过6个月，尚不能据此确认CKD快速进展。'
+        : r.verdict.rapid ? '本次eGFR年变化率低于−5 mL/min/1.73m²/年，数值支持CKD快速进展。'
+        : '本次eGFR年变化率未低于−5 mL/min/1.73m²/年，未支持CKD快速进展。';
+      const excluded = r.excluded.length ? '\n未纳入血肌酐（μmol/L）：'+r.excluded.map(p=>`${p.cr}（${p.date}，${qualityText[p.status]}）`).join('；')+'。' : '';
+      return `纳入血肌酐（μmol/L）：${values}。\n合格血肌酐共${r.included.length}个不同日期，时间跨度${r.spanDays}天。采用CKD-EPI 2009公式换算eGFR，经线性回归计算，eGFR年变化率为${rate>0?'+':''}${rate.toFixed(2)} mL/min/1.73m²/年。${conclusion}${excluded}`;
+    }
+
     /* ── COPY REPORT ── */
     function copyReport() {
       if (!lastReport) return showToast('请先完成一次核查');
-      const rawSid = document.getElementById('sid').value.trim();
-      const sid = rawSid ? 'CN' + rawSid : '未填写';
-      const title = document.getElementById('verdict-title').textContent;
-      const desc = document.getElementById('verdict-desc').textContent;
-      const path = document.getElementById('path-title').textContent;
-      const now = new Date().toLocaleDateString('zh-CN');
-      const includedLines = lastReport.included.map(point =>
-        `  - ${point.date}｜SCr ${point.cr} μmol/L｜eGFR ${point.egfr.toFixed(1)}｜纳入`
-      );
-      const excludedLines = lastReport.excluded.map(point =>
-        `  - ${point.date}｜SCr ${point.cr} μmol/L｜${qualityText[point.status]}`
-      );
-
-      const txt = [
-        `[eGFR快速进展核查记录] ${now}`,
-        `研究: HRS-7535-307 (RENEW-CKD)`,
-        `筛选号: ${sid}   性别: ${sex === 'M' ? '男' : '女'}   年龄: ${document.getElementById('age').value || '—'} 岁`,
-        `计算口径: 至少2个不同日期合格点；跨度至少6个月且年下降幅度严格>5，才可支持快速进展`,
-        `模式: ${lastReport.prescreen ? '预筛（筛选期肌酐未填写）' : '筛选期'}`,
-        `计算: CKD-EPI 2009（血肌酐，非黑人分支） + OLS`,
-        `${lastReport.prescreen ? '预筛末次' : '筛选期'}复算 eGFR: ${lastReport.referenceEgfr.toFixed(1)} mL/min/1.73m²`,
-        `eGFR年变化率: ${lastReport.slope >= 0 ? '+' : ''}${lastReport.slope.toFixed(2)} mL/min/1.73m²/年`,
-        `年下降幅度: ${lastReport.annualDecline.toFixed(2)} mL/min/1.73m²/年`,
-        `取点跨度: ${lastReport.spanDays}天${lastReport.shortSpan ? '（不足6个月：结果仅为估算，不可作为证据）' : ''}`,
-        `R²: ${lastReport.twoPoint ? '1.000*（两点法，无质量判别意义）' : lastReport.r2.toFixed(3)}`,
-        `纳入取点 (${includedLines.length}):`,
-        ...includedLines,
-        `排除取点 (${excludedLines.length}):`,
-        ...(excludedLines.length ? excludedLines : ['  - 无']),
-        `─────────────────────`,
-        `核查结论: ${title}`,
-        `说明: ${desc}`,
-        `入选标准4下一步: ${path}`,
-        `─────────────────────`,
-        `* 本记录仅核查eGFR快速进展证据，不用于主要终点评价，不单独判定整体入排；最终须经研究者确认。`
-      ].join('\n');
+      const txt = clinicalNarrative(lastReport);
 
       navigator.clipboard.writeText(txt)
         .then(() => showToast('报告已复制到剪贴板'))
