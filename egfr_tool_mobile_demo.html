@@ -1145,7 +1145,7 @@
         document.getElementById('result-panel').style.display='none';document.getElementById('age').value=data.age;setSex(data.sex==='女'?'F':'M');
         document.getElementById('scr-tbody').replaceChildren();rowId=0;addRow('screening');
         for(const point of data.rows){
-          if(point.creatinine==null&&point.egfr==null)continue;
+          if(point.creatinine==null)continue;
           addRow('history');const row=document.getElementById('scr-tbody').lastElementChild;
           const [year,month,day]=(point.date||'').split('-');row.querySelector('.dt-year').value=year||'';row.querySelector('.dt-month').value=month||'';row.querySelector('.dt-day').value=day||'';
           const valueInput=row.querySelector('.scr-inp');if(point.creatinine!=null){valueInput.value=point.unit==='mg/dL'?Number(point.creatinine)*88.4:point.creatinine;}else{valueInput.type='text';valueInput.value='eGFR '+point.egfr;valueInput.title='原已审直接eGFR点，按原取点保留；不是血肌酐值';}
