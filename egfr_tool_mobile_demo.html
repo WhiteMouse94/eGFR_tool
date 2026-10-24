@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>eGFR 快速进展核查工具 | RENEW-CKD HRS-7535-307</title>
   <meta name="description" content="HRS-7535-307 入选标准4 eGFR快速进展证据核查工具，采用CKD-EPI 2009与OLS线性回归，仅在本机浏览器中计算。" />
@@ -967,21 +968,110 @@
         font-size: 18px;
       }
     }
+
+    #registration-dialog{border:1px solid var(--border);border-radius:18px;padding:24px;width:min(420px,calc(100vw - 32px));margin:auto;background:var(--bg-select);color:var(--text-1);font-family:inherit;box-shadow:0 20px 70px #0003}
+    #registration-dialog::backdrop{background:#173d355c;backdrop-filter:blur(3px)}
+    #registration-dialog h2{font-size:23px;margin-bottom:9px}
+    #registration-dialog p{font-size:13px;line-height:1.7;color:var(--text-2)}
+    #registration-dialog label{display:block;margin:16px 0 6px;font-size:14px;font-weight:600}
+    #registration-dialog input,#registration-dialog select{box-sizing:border-box;width:100%;min-height:46px;padding:10px;border:1px solid var(--border);border-radius:8px;color:var(--text-1);background:var(--bg-input);font:inherit}
+    #registration-dialog .registration-center{display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    #registration-dialog .registration-center span{padding:11px;background:var(--teal-dim);color:var(--teal);font-weight:700}
+    #registration-dialog .registration-center input{border:0;min-width:0}
+    #registration-dialog button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:11px 14px;background:var(--teal);color:white;cursor:pointer}
+    #registration-dialog .registration-actions{display:flex;gap:10px;margin-top:23px}
+    #registration-dialog .registration-actions button:first-child{flex:1}
+    #registration-dialog .registration-actions button:last-child{background:transparent;color:var(--text-2)}
+    #registration-dialog .registration-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    #registration-dialog .registration-tags button{background:var(--teal-dim);color:var(--teal);font-size:12px;padding:6px 8px}
+    #registration-dialog .registration-center button{margin:0 4px;padding:8px 10px;white-space:nowrap}
+    #registered-bar{max-width:1100px;margin:14px auto;padding:9px 16px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--text-2)}
+    #registered-bar button{font:inherit;border:0;background:none;color:var(--teal);cursor:pointer;padding:5px}
+    #registration-dialog [hidden],#registered-bar[hidden]{display:none!important}
+
+    .mobile-title{min-width:0;flex:1}.mobile-title h1{margin-top:4px}.mobile-toolbar{display:flex;width:100%;gap:8px;align-items:center;justify-content:space-between}.top-tools{position:static;display:flex;gap:6px;align-items:center;flex-shrink:0}.top-tools .theme-btn{margin:0;padding:8px 10px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-1)}
+    .settings-trigger{border:1px solid var(--border);border-radius:9px;background:var(--bg-card);color:var(--text-1);font:inherit;font-size:13px;font-weight:600;padding:9px 12px;cursor:pointer}
+    #settings-dialog{position:fixed;inset:60px 14px auto auto;margin:0;width:min(340px,calc(100vw - 28px));max-height:calc(100dvh - 80px);overflow:auto;padding:20px;border:1px solid var(--border);border-radius:14px;background:var(--bg-select);color:var(--text-1);font:inherit}
+    #settings-dialog::backdrop{background:#0002}
+    .settings-heading{display:flex;justify-content:space-between;align-items:center}.settings-heading h2{font-size:20px}
+    #settings-dialog button{font:inherit;cursor:pointer;border:1px solid var(--border);border-radius:8px;padding:9px 12px;background:var(--bg-input);color:var(--text-1)}
+    .settings-section{margin-top:20px;padding-top:18px;border-top:1px solid var(--border)}.settings-section h3{font-size:14px;margin:0 0 12px;color:var(--text-2)}
+    #settings-dialog #registered-bar{margin:0;padding:0;max-width:100%;display:flex;flex-direction:column;align-items:stretch;gap:9px}#settings-dialog #registered-label{line-height:1.7;overflow-wrap:anywhere}
+    #settings-dialog .theme-options{display:flex;gap:10px}#settings-dialog .theme-options button{flex:1}#settings-dialog button[aria-pressed=true]{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
+    .usage-modes{display:flex;gap:8px;margin-top:16px}.usage-modes button{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--border);border-radius:8px;padding:10px 18px;background:var(--bg-card);color:var(--text-2);cursor:pointer}.usage-modes button[aria-pressed=true]{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
+    #settings-dialog details{margin-top:12px;font-size:13px;line-height:1.8}#settings-dialog summary{cursor:pointer;font-weight:600;color:var(--teal)}#settings-dialog p{margin-top:8px}#settings-dialog .formula-text{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg-input);padding:10px;border-radius:8px;font-size:12px}
+    .top-tools .theme-btn{min-width:44px;min-height:44px;padding:0}.top-tools .settings-trigger{min-height:44px}
+    .page .mobile-toolbar .hdr-badge{margin:0;max-width:none;min-width:0;line-height:1.4}
+    .mode-description{margin-top:8px;font-size:12px;line-height:1.65;color:var(--text-2)}.mode-description summary{cursor:pointer;color:var(--teal);font-weight:600}.mode-description #mode-help{margin-top:7px}
+    body:has(#settings-dialog[open]){overflow:hidden}
+    @media(max-width:600px),(max-height:500px) and (pointer:coarse){
+      #settings-dialog{inset:auto 0 0 0;margin:0;width:100%;max-width:none;max-height:88dvh;border-radius:18px 18px 0 0;padding:20px 16px max(18px,env(safe-area-inset-bottom));overscroll-behavior:contain}
+      #settings-dialog::backdrop{background:#0005}
+      #settings-dialog .settings-heading{position:sticky;top:-20px;z-index:1;background:var(--bg-select);padding:8px 0 12px}
+      #settings-close{min-width:44px;min-height:44px}
+    }
+    #settings-dialog [hidden]{display:none!important}
+    .demo-btns{display:none!important}
+    #screening-lookup-row[hidden]{display:none!important}
+
+    /* Compact calculator layout; registration remains comfortably spaced. */
+    .page .hdr{position:relative;padding:14px 14px 10px}
+    .page .hdr-badge{font-size:10px;letter-spacing:0;padding:2px 7px;margin-bottom:6px;max-width:calc(100% - 100px)}
+    .page .usage-modes{margin-top:8px;gap:6px}.page .usage-modes button{padding:8px 7px;font-size:13px;white-space:nowrap}
+    .page .card{margin:8px 10px 0;padding:12px;border-radius:12px}
+    .page .card-title{margin-bottom:9px;letter-spacing:0}
+    .page .form-row{gap:8px;margin-bottom:6px}.page .form-row:last-child{margin-bottom:0}
+    .page .form-group{gap:4px}.page .form-group input{padding:8px 10px;min-height:36px}
+    .page .sex-btn{padding:7px;min-height:36px}
+    .page .scr-table{margin-bottom:7px}.page .scr-table th{padding:0 3px 5px;letter-spacing:0}
+    .page .scr-table td{padding:2px}.page .scr-table input,.page .scr-table select{min-height:30px;box-shadow:none}
+    .page .hint{margin-top:7px;font-size:11px;line-height:1.5}
+    .page .add-btn{padding:8px;margin-top:0}.page .calc-wrap{margin:12px 10px}
+    .page .calc-btn{padding:12px;min-height:44px}
+  .v1-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.v1-wide{grid-column:1/-1}.v1-grid .form-group{min-width:0}.v1-grid select{width:100%;min-height:40px;padding:10px 12px;background:var(--bg-input);color:var(--text-1);border:1px solid var(--border);border-radius:10px;font:inherit;box-shadow:var(--shadow)}#v1-drugs{margin:12px 0;color:var(--text-2);font-size:13px}#v1-drugs input{width:auto}#v1-result{font-size:13px;line-height:1.65;color:var(--text-2)}
+    .v1-matrix-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px;margin:14px 0}.v1-matrix-table caption{text-align:left;color:var(--text-2);padding-bottom:10px}.v1-matrix-table th,.v1-matrix-table td{border:1px solid var(--border);padding:12px 5px;text-align:center;overflow-wrap:anywhere}.v1-matrix-table th{font-weight:600;color:var(--text-2)}.v1-matrix-table td{background:var(--bg-input);color:var(--text-2)}.v1-matrix-table td.v1-selected{outline:3px solid var(--teal);outline-offset:-3px;background:var(--teal-dim);color:var(--teal)}.v1-matrix-table td.v1-selected.fail{outline-color:#c85b40;background:rgba(200,91,64,.12);color:#c85b40}.v1-matrix-table strong{display:inline-block;margin-top:6px}.v1-footnote{font-size:12px;color:var(--text-2)}#v1-facts,#v1-result{font-size:14px;line-height:1.8}
+      .v1-fact-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:10px 0}.v1-fact-grid>div{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:7px 4px;display:flex;flex-direction:column;gap:3px;line-height:1.35;min-width:0;text-align:center}.v1-fact-grid span,.v1-fact-grid small{font-size:11px;color:var(--text-2);overflow-wrap:anywhere}.v1-fact-grid strong{font-size:16px;overflow-wrap:anywhere}#v1-outcome{font-size:24px;font-weight:700;color:var(--text-1)}#v1-outcome[data-state=pass]{color:var(--teal)}#v1-outcome[data-state=fail]{color:#c85b40}#v1-delivery{font-size:13px;color:var(--text-2);margin-top:6px}
+      #settings-dialog .identity-section{margin-top:12px;padding-top:12px}#settings-dialog .identity-line{display:flex;align-items:baseline;gap:4px;min-width:0}#settings-dialog .identity-line h3{margin:0;flex-shrink:0}#settings-dialog #registered-label{min-width:0;line-height:1.5}#settings-dialog .identity-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}#settings-dialog .identity-actions button{width:100%;margin:0;min-height:40px;padding:8px}
+      .v1-status-line{display:flex;align-items:baseline;gap:10px;justify-content:space-between}.v1-status-line #v1-outcome{flex-shrink:0}.v1-status-line #v1-delivery{margin:0;font-size:12px;text-align:right}
+      .v1-fact-grid>div:first-child small{font-size:10px;line-height:1.2}.v1-fact-grid small:empty{display:none}
+      .page .metrics-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:10px}.page .metrics-row .metric-card{padding:10px 4px;margin:0;min-width:0;text-align:center;border-radius:12px}.page .metrics-row .metric-label{font-size:11px;letter-spacing:0}.page .metrics-row .metric-value{font-size:22px;margin:5px 0;line-height:1.2}.page .metrics-row .metric-unit{font-size:9px;overflow-wrap:anywhere}.page .metrics-row .verdict-card{display:flex;flex-direction:column;justify-content:center;gap:7px}.page .metrics-row .verdict-title{font-size:18px;margin:0;line-height:1.3}.page #verdict-icon{display:none}.page #verdict-desc:empty,.page #verdict-reasons:empty{display:none}
+      .page .metrics-row .verdict-card{align-items:center;text-align:center}.page .metrics-row .verdict-card .metric-label,.page .metrics-row .verdict-title{width:100%;text-align:center}#submit-review[hidden]{display:none}
+      #review-result-link{display:block;text-align:center;margin-top:10px;text-decoration:none}#review-result-link[hidden]{display:none}
+      #submit-review{width:calc(100% - 32px);max-width:none;margin:0 16px 12px;box-sizing:border-box;white-space:normal;justify-content:center;text-align:center;padding:14px 12px;line-height:1.5;font-size:15px}.page .v1-matrix-table caption{text-align:center;font-weight:700;font-size:15px;padding:10px 0}
   </style>
 </head>
 
 <body class="light">
+  <dialog id="registration-dialog" aria-labelledby="registration-heading">
+    <h2 id="registration-heading">使用者登记</h2><p>首次填写一次，一年内自动进入。</p>
+    <form id="registration-form">
+    <label for="registration-role">角色</label><select id="registration-role" required><option value="">请选择</option><option>CRA</option><option>CRC</option><option>研究者</option><option>医学</option><option>PM</option><option>其他</option></select>
+    <div id="registration-center-wrap" hidden><label id="registration-center-label" for="registration-center">中心号</label><div class="registration-center"><span>CN</span><input id="registration-center" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" placeholder="3位数，例如055"><button id="registration-center-add" type="button" hidden>添加</button></div><div id="registration-center-tags" class="registration-tags" hidden></div></div>
+    <div id="registration-other-wrap" hidden><label for="registration-other">具体身份</label><input id="registration-other" maxlength="40" placeholder="请填写具体身份"></div>
+    <label for="registration-name">姓名</label><input id="registration-name" autocomplete="name" maxlength="40" required>
+    <div class="registration-actions"><button type="submit">登记并进入</button><button type="button" id="registration-cancel">取消</button></div>
+    <p id="registration-error" role="alert"></p></form>
+  </dialog>
+  <dialog id="settings-dialog" aria-labelledby="settings-title"><div class="settings-heading"><h2 id="settings-title">设置与说明</h2><button type="button" id="settings-close" aria-label="关闭设置与说明">×</button></div>
+  <section class="settings-section identity-section"><div id="registered-bar" hidden><div class="identity-line"><h3>我的身份：</h3><span id="registered-label"></span></div><div class="identity-actions"><button type="button" id="registration-edit">管理身份</button><button type="button" id="registration-exit">退出登记</button></div></div><button type="button" id="settings-register">登记身份</button></section>
+
+  <section class="settings-section"><h3>使用说明</h3>
+    <details open><summary>计算器用途与使用方式</summary><p>本工具供HRS-7535-307项目研究者、CRA和CRC计算eGFR年变化率，辅助评估CKD快速进展。</p><p><b>日常模式</b>用于日常评估；<b>V1审核模式</b>可查询试验参与者已认定的合格血肌酐值，结合补充的V1结果辅助进行筛选判定。</p></details>
+    <details open><summary>取点规则与结果含义</summary><p>需至少<b>3个不同日期的合格血肌酐点</b>，最早至最晚检测日期的跨度须<b>超过6个月</b>。未满足条件时，结果仅作趋势估计，无法评估是否存在快速进展。急性肾损伤（AKI）、感染或显著影响肾功能的用药等非稳定状态下的检测值，应核实干扰因素后排除。</p><p>采用<b>CKD-EPI 2009公式</b>换算eGFR，并通过<b>普通最小二乘线性回归（OLS）</b>估算年变化率。<b>正值表示上升，负值表示下降</b>，单位为mL/min/1.73m²/年。在满足取点要求的前提下，<b>年变化率低于−5</b>时支持CKD快速进展。</p><p><b>R²反映数据与拟合直线的一致程度</b>。R²较低提示线性趋势对数据的解释有限，应核查偏离拟合线较远的检测点及可能的干扰因素，但不能仅因偏离拟合线而排除取点。</p><p>取点是否合格、是否存在干扰因素，以及快速进展的最终判定，需由研究者与项目组核实。本工具的计算结果仅供参考。</p></details>
+    <details open><summary>采用的公式与算法</summary><p><b>血肌酐单位：</b>输入使用μmol/L，计算前除以88.4换成mg/dL。</p><p><b>CKD-EPI 2009肌酐公式：</b>采用不加黑人系数的分支。</p><div class="formula-text">eGFR = 141 × min(SCr/κ, 1)<sup>α</sup> × max(SCr/κ, 1)<sup>−1.209</sup> × 0.993<sup>年龄</sup> × 女性系数</div><p>SCr单位为mg/dL。男性κ=0.9、α=−0.411、女性系数=1；女性κ=0.7、α=−0.329、女性系数=1.018。eGFR单位为mL/min/1.73m²。历史年龄依据登记年龄及对应日期推算，生日不明确时属于估计。</p><p><b>普通最小二乘线性回归（OLS）：</b>以合格点检测日期为横轴、换算eGFR为纵轴，时间按365.25天折算一年。</p><div class="formula-text">年变化率 β = Σ[(t − 平均t) × (eGFR − 平均eGFR)] ÷ Σ[(t − 平均t)²]</div><p>R²只反映取点与直线的拟合程度，不是单独的入选门槛。观察跨度、取点合格性及干扰因素仍需核对。</p></details>
+  </section></dialog>
+
   <div class="page">
 
     <!-- Header -->
     <div class="hdr">
-      <div class="hdr-top" style="flex-wrap: wrap; gap: 12px;">
-        <div class="hdr-left" style="min-width: 100%;">
-          <div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div>
-          <h1>eGFR <span>年变化率计算器</span></h1>
-        </div>
+      <div class="hdr-top" style="flex-wrap: wrap; gap: 8px;">
+        <div class="mobile-toolbar"><div class="mobile-title"><div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div><h1>eGFR <span>年变化率计算器</span></h1></div><div class="top-tools"><button type="button" id="theme-quick" class="theme-btn" onclick="toggleTheme()" aria-label="切换白天／夜间模式" title="切换至夜间">☾</button><button type="button" id="settings-open" class="settings-trigger" aria-label="设置与说明">⚙ 设置与说明</button></div></div>
 
-        <div class="demo-btns" style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
+
+        <nav class="usage-modes" style="width:100%" aria-label="使用模式"><button id="mode-free" type="button" aria-pressed="true">日常模式</button><button id="mode-audit" type="button" aria-pressed="false">V1审核模式</button><button id="daily-example" type="button" onclick="fillDemo(1);calculate()" style="margin-left:auto">示例</button><button id="v1-example" type="button" hidden onclick="fillV1Example()" style="margin-left:auto">示例</button><button id="reset-top" type="button" onclick="resetAll()">清空重填</button></nav>
+
+        <div class="demo-btns" hidden style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-start; width: 100%;">
           <button
             style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--green); background:var(--green-dim); color:var(--green); cursor:pointer;"
             onclick="fillDemo(1)">示例1：快速进展</button>
@@ -992,8 +1082,6 @@
             style="font-size:12px; font-weight: 600; padding:6px 12px; border-radius:8px; border:1px solid var(--yellow); background:var(--yellow-dim); color:var(--yellow); cursor:pointer;"
             onclick="fillDemo(3)">示例3：需复核</button>
           <div style="flex-grow: 1;"></div>
-          <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="切换白天/夜间模式"
-            style="margin:0; padding:4px 10px; border-radius:8px;">🌙</button>
         </div>
       </div>
     </div>
@@ -1002,7 +1090,7 @@
     <!-- Subject Info -->
     <div class="card">
       <div class="card-title">受试者信息 <span id="import-status" role="status" style="font-size:12px"></span></div>
-      <div class="form-row">
+      <div class="form-row" id="screening-lookup-row" hidden>
         <div class="form-group" style="flex:2">
           <label>筛选号 <span style="color:var(--text-3);font-weight:400;">（选填）</span></label>
           <div class="id-input-wrap">
@@ -1035,7 +1123,7 @@
         <thead>
           <tr>
             <th style="width:48%">日期</th>
-            <th style="width:20%">血肌酐 (μmol/L)</th>
+            <th style="width:20%">血肌酐</th>
             <th style="width:24%">取点状态</th>
             <th style="width:8%"></th>
           </tr>
@@ -1043,19 +1131,24 @@
         <tbody id="scr-tbody"></tbody>
       </table>
       <button class="add-btn" onclick="addRow()">＋ 添加历史记录点</button>
-      <div class="hint">
-        <span>⚠️</span>
-        <span>筛选期肌酐可留空（预筛模式）。不设历史时间上限，至少 <b>3 个不同日期</b>的合格点；最早至最晚必须严格超过6个日历月。若跨度未超过6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。</span>
-      </div>
+      <details class="mode-description"><summary id="mode-help-title">日常模式说明</summary><div id="mode-help">日常模式：筛选期肌酐可留空。至少 <b>3 个不同日期</b>的合格点，最大时间跨度需超过6个月，若未超过6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。</div></details>
     </div>
 
+<section class="card" id="v1-fields" hidden>
+<div class="card-title">V1 筛选检查与病史</div>
+<div class="v1-grid">
+<div class="form-group"><label for="v1-uacr">UACR（mg/g）</label><input id="v1-uacr" type="number" min="0" step="any" placeholder="数值"></div>
+<div class="form-group"><label for="v1-cvd">CVD病史</label><select id="v1-cvd"><option value="unknown" disabled selected hidden>请选择</option><option value="yes">有</option><option value="no">无</option></select></div>
+<div class="form-group v1-wide"><label for="v1-planned">随机日计划启用 RASi、SGLT2i 或 ns-MRA</label><select id="v1-planned"><option value="unknown" disabled selected hidden>请选择</option><option value="yes">有计划</option><option value="no">无计划</option></select></div>
+</div><div id="v1-drugs" hidden><label><input type="checkbox" value="RASi"> RASi</label> <label><input type="checkbox" value="SGLT2i"> SGLT2i</label> <label><input type="checkbox" value="ns-MRA"> ns-MRA</label></div>
+</section>
     <!-- Error -->
     <div class="error-banner" id="error-banner"></div>
 
     <!-- Calculate -->
     <div class="calc-wrap">
       <button class="calc-btn" onclick="calculate()">
-        <span>核查快速进展证据</span><span>→</span>
+        <span>计算</span><span>→</span>
       </button>
     </div>
 
@@ -1063,6 +1156,7 @@
     <div id="result-panel">
 
       <div class="metrics-row">
+        <div class="metric-card verdict-card" id="verdict-card"><div class="metric-label">CKD快速进展</div><div class="verdict-title" id="verdict-title">—</div><span id="verdict-icon" hidden></span></div>
         <div class="metric-card">
           <div class="metric-label" id="r-reference-label">筛选期 eGFR</div>
           <div class="metric-value mv-blue" id="r-last-egfr">—</div>
@@ -1078,17 +1172,9 @@
           <div class="metric-value mv-teal" id="r-r2">—</div>
           <div class="metric-unit">线性拟合优度</div>
         </div>
-      </div>
 
-      <!-- Verdict -->
-      <div class="verdict-card" id="verdict-card">
-        <div class="verdict-icon" id="verdict-icon">—</div>
-        <div>
-          <div class="verdict-title" id="verdict-title">—</div>
-          <div class="verdict-desc" id="verdict-desc">—</div><div class="verdict-desc" id="verdict-reasons"></div>
-        </div>
       </div>
-
+      <div class="verdict-desc" id="verdict-desc"></div><div class="verdict-desc" id="verdict-reasons"></div>
 
       <!-- Chart -->
       <div class="card chart-card">
@@ -1098,13 +1184,15 @@
       </div>
 
       <!-- Detail -->
-      <div class="card" id="detail-card" style="font-size: 13px;color:var(--text-2);line-height:1.9;"></div>
+      <section class="card"><h2 class="card-title">病历参考</h2><div id="detail-card" style="font-size:13px;color:var(--text-2);line-height:1.9;"></div></section>
 
       <!-- Actions -->
       <div class="action-row">
         <button class="action-btn copy-btn" onclick="copyReport()">📋 复制病历正文</button>
-        <button class="action-btn reset-btn" onclick="resetAll()">🔄 新建核查</button>
+        <button class="action-btn reset-btn" onclick="editCurrentData()">修改数据</button>
       </div>
+      <button id="submit-review" class="calc-btn" type="button" onclick="calculateLinked(true)" hidden>确认数据无误，锁定数据，回传项目组复核</button><a id="review-result-link" class="action-btn" hidden>查看审核结果</a>
+      <section class="card" id="v1-decision" hidden><h2 class="card-title">V1筛选判定参考</h2><div class="v1-status-line"><div id="v1-outcome" role="status"></div><p id="v1-delivery"></p></div><div id="v1-facts" class="v1-fact-grid"></div><div id="v1-matrix"></div><p id="v1-result" hidden></p></section>
     </div>
 
   </div>
@@ -1112,36 +1200,117 @@
 
   <script>
     /* ── STATE ── */
+    let registeredProfile = null;
+    let registrationCenters=[];
+    const registrationStorageKey='hrs307-user-profile-v1';
+    let pendingScreening='';
     let sex = 'M';
     let lockedBaseline = null;
     let lockedResult = null;
     let linkedRequestId = null;
     let chartInstance = null;
     let isLight = true;
+    let usageMode='free';
+    const MODE_HELP={"free": "日常模式：筛选期肌酐可留空。至少 <b>3 个不同日期</b>的合格点，最大时间跨度需超过6个月，若未超过6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。", "audit": "V1审核模式：查询试验参与者已认定的合格血肌酐值，填入筛选期血肌酐后自动判定。资格认定需要：至少 <b>3 个不同日期</b>的合格点，最大时间跨度需超过6个月，若未满足条件，结果仅为趋势估计，无法评估是否存在“快速进展”。若有额外数据可补充，最终判定结果将回传至项目组进行最终审核。"};
     let lastReport = null;
 
     /* ── THEME ── */
-    function toggleTheme() {
-      isLight = !isLight;
-      document.body.classList.toggle('light', isLight);
-      document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
-      if (chartInstance) rebuildChartColors();
+    function setTheme(light){
+      isLight=light;document.body.classList.toggle('light',light);document.documentElement.style.backgroundColor=light?'#f0f4f8':'#08121e';const quick=document.getElementById('theme-quick');if(quick){quick.textContent=light?'☾':'☀';quick.title=light?'切换至夜间':'切换至白天';}try{localStorage.setItem('hrs307-display-mode',light?'light':'dark');}catch{}rebuildChartColors();
     }
-    function rebuildChartColors() {
-      /* just re-render with current data — handled by chart update */
+    function toggleTheme(){setTheme(!isLight);}
+    function rebuildChartColors(){if(!chartInstance)return;const style=getComputedStyle(document.body),text=style.getPropertyValue('--text-2').trim(),grid=style.getPropertyValue('--border').trim();chartInstance.options.plugins.legend.labels.color=text;for(const axis of Object.values(chartInstance.options.scales)){if(axis.ticks)axis.ticks.color=text;if(axis.title)axis.title.color=text;if(axis.grid)axis.grid.color=grid;}chartInstance.update('none');}
+    function usageEvent(event){
+      try{if(typeof crypto==='undefined'||typeof crypto.randomUUID!=='function'||typeof navigator==='undefined'||typeof navigator.sendBeacon!=='function')return;
+      let visitor;try{visitor=localStorage.getItem('hrs307-browser-id-v1');if(!visitor){visitor=crypto.randomUUID();localStorage.setItem('hrs307-browser-id-v1',visitor);}}catch{visitor=crypto.randomUUID();}
+      const body=JSON.stringify({id:crypto.randomUUID(),visitor,event,mode:usageMode,page:location.pathname.startsWith('/cra/')?'calculator':'entry'});
+      navigator.sendBeacon(portalOrigin()+'/cra/portal/visit',body);}catch{}
+    }
+    function setUsageMode(mode,record=true){const changed=usageMode!==mode;usageMode=mode;document.getElementById('daily-example').hidden=mode!=='free';const localPreview=['127.0.0.1','localhost'].includes(location.hostname);document.getElementById('v1-example').hidden=mode!=='audit'||!localPreview;document.getElementById('reset-top').style.marginLeft=mode==='audit'&&!localPreview?'auto':'0';document.getElementById('v1-fields').hidden=mode!=='audit';if(!lockedResult)document.querySelector('.calc-btn span:first-child').textContent=mode==='audit'?'计算':'计算';document.getElementById('mode-help').innerHTML=MODE_HELP[mode];document.getElementById('mode-help-title').textContent=(mode==='free'?'日常模式':'V1审核模式')+'说明';document.getElementById('mode-help').closest('details').open=mode==='audit';document.getElementById('screening-lookup-row').hidden=mode!=='audit';document.getElementById('mode-free').setAttribute('aria-pressed',String(mode==='free'));document.getElementById('mode-audit').setAttribute('aria-pressed',String(mode==='audit'));if(record&&changed)usageEvent('mode');}
+    function chooseAudit(){
+      setUsageMode('audit');if(location.pathname.startsWith('/cra/portal/'))return;
+      if(location.pathname.startsWith('/cra/calculator'))return;
+      if(!registeredProfile){showRegistration();return;}
+      const sid=document.getElementById('sid').value.trim();location.href=portalOrigin()+'/cra/portal/calculator/'+(/^\d{6}$/.test(sid)?'?sid='+sid:'');
+    }
+    function setupControls(){
+      let theme='light';try{theme=localStorage.getItem('hrs307-display-mode')||'light';}catch{}setTheme(theme!=='dark');
+      document.getElementById('settings-open').onclick=()=>{document.getElementById('settings-register').hidden=!!registeredProfile;document.getElementById('settings-dialog').showModal();};
+      document.getElementById('settings-close').onclick=()=>document.getElementById('settings-dialog').close();document.getElementById('settings-dialog').addEventListener('click',event=>{const dialog=event.currentTarget,rect=dialog.getBoundingClientRect();if(event.target===dialog&&(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom))dialog.close();});
+      document.getElementById('settings-register').onclick=()=>{document.getElementById('settings-dialog').close();chooseAudit();};
+      document.getElementById('v1-planned').addEventListener('change',()=>{document.getElementById('v1-drugs').hidden=document.getElementById('v1-planned').value!=='yes';});
+      document.getElementById('v1-fields').addEventListener('input',()=>{if(!lockedResult)linkedRequestId=null;});
+      const invalidateLinked=()=>{if(lockedBaseline&&!lockedResult)linkedRequestId=null;};document.getElementById('scr-tbody').addEventListener('input',invalidateLinked);document.getElementById('scr-tbody').addEventListener('change',invalidateLinked);
+
+      document.getElementById('mode-free').onclick=()=>{if(lockedBaseline||lockedResult){if(!confirm('切换日常模式将清空当前页面取点；服务器已保存结果仍保留。'))return;resetAll();}setUsageMode('free');};document.getElementById('mode-audit').onclick=chooseAudit;
+      setUsageMode(location.pathname.startsWith('/cra/')?'audit':'free',false);usageEvent('visit');
+    }
+
+    function calculatorApiPath(path){return (location.pathname.startsWith('/cra/portal/')?'/cra/portal/api/calculator':'/cra/api/calculator')+path;}
+    function portalOrigin(){return ['localhost','127.0.0.1'].includes(location.hostname)?location.origin:'https://14.103.73.237';}
+    function showRegisteredProfile(profile){
+      registeredProfile=profile;try{localStorage.setItem(registrationStorageKey,JSON.stringify(profile));}catch{}
+      document.getElementById('registered-label').textContent=[profile.name,(profile.centers||[profile.center]).filter(Boolean).join('、'),profile.role==='其他'?profile.roleOther:profile.role].filter(Boolean).join(' · ');
+      document.getElementById('registered-bar').hidden=false;
+    }
+    function showRegistration(){
+      const p=registeredProfile||{};registrationCenters=[...(p.centers||[p.center]).filter(Boolean)];document.getElementById('registration-name').value=p.name||'';document.getElementById('registration-center').value=p.role==='CRA'?'':p.center||'';document.getElementById('registration-center').value=document.getElementById('registration-center').value.replace(/^CN/,'');document.getElementById('registration-role').value=p.role||'';document.getElementById('registration-other').value=p.roleOther||'';toggleRegistrationOther();document.getElementById('registration-cancel').hidden=false;document.getElementById('registration-dialog').showModal();
+    }
+    function renderRegistrationCenters(){
+      const tags=document.getElementById('registration-center-tags');tags.replaceChildren(...registrationCenters.map(center=>{const button=document.createElement('button');button.type='button';button.textContent=center+' ×';button.setAttribute('aria-label','移除'+center);button.onclick=()=>{registrationCenters=registrationCenters.filter(c=>c!==center);renderRegistrationCenters();};return button;}));
+    }
+    function addRegistrationCenter(){
+      const input=document.getElementById('registration-center'),digits=input.value.trim();if(!/^\d{3}$/.test(digits)){document.getElementById('registration-error').textContent='中心号填写3位数字，例如055';return false;}const center='CN'+digits;if(!registrationCenters.includes(center))registrationCenters.push(center);input.value='';document.getElementById('registration-error').textContent='';renderRegistrationCenters();return true;
+    }
+    function toggleRegistrationOther(){
+      const role=document.getElementById('registration-role').value,site=['CRA','CRC','研究者'].includes(role),other=role==='其他',multiple=role==='CRA';
+      document.getElementById('registration-center-wrap').hidden=!site;document.getElementById('registration-center').required=['CRC','研究者'].includes(role);document.getElementById('registration-center-label').textContent=multiple?'中心号（选填，可添加多个）':'中心号';document.getElementById('registration-center-add').hidden=!multiple;document.getElementById('registration-center-tags').hidden=!multiple;renderRegistrationCenters();
+      document.getElementById('registration-other-wrap').hidden=!other;document.getElementById('registration-other').required=other;
+    }
+    function enterRegisteredPortal(profile,screening=''){
+      const form=document.createElement('form');form.method='POST';form.action=portalOrigin()+'/cra/portal/register';
+      for(const [key,value]of Object.entries({name:profile.name,center:profile.center,role:profile.role,roleOther:profile.roleOther||'',centers:JSON.stringify(profile.centers||[]),screening})){const input=document.createElement('input');input.type='hidden';input.name=key;input.value=value;form.append(input);}
+      document.body.append(form);form.submit();
+    }
+    async function setupRegistration(){
+      document.getElementById('registration-role').addEventListener('change',toggleRegistrationOther);document.getElementById('registration-center-add').onclick=addRegistrationCenter;document.getElementById('registration-dialog').addEventListener('cancel',()=>{if(!registeredProfile)setUsageMode('free');});
+      document.getElementById('registration-edit').onclick=()=>{document.getElementById('settings-dialog').close();showRegistration();};
+      document.getElementById('registration-cancel').onclick=()=>{document.getElementById('registration-dialog').close();if(!registeredProfile)setUsageMode('free');};
+      document.getElementById('registration-exit').onclick=()=>{document.getElementById('settings-dialog').close();
+        try{localStorage.removeItem(registrationStorageKey);}catch{}registeredProfile=null;
+        if(location.pathname.startsWith('/cra/portal/')){const form=document.createElement('form');form.method='POST';form.action='/cra/portal/logout';document.body.append(form);form.submit();}
+        else{document.getElementById('registered-bar').hidden=true;showRegistration();}
+      };
+      document.getElementById('registration-form').addEventListener('submit',e=>{
+        e.preventDefault();const role=document.getElementById('registration-role').value;let centers=[];
+        if(role==='CRA'){if(document.getElementById('registration-center').value.trim()&&!addRegistrationCenter())return;centers=[...registrationCenters];}
+        else if(['CRC','研究者'].includes(role))centers=['CN'+document.getElementById('registration-center').value];
+        const profile={name:document.getElementById('registration-name').value.trim(),center:centers[0]||'',centers,role,roleOther:role==='其他'?document.getElementById('registration-other').value.trim():'',rememberUntil:Date.now()+365*86400000};
+        if(!profile.name||centers.some(c=>!/^CN\d{3}$/.test(c))||!['CRA','CRC','研究者','医学','PM','其他'].includes(profile.role)||role==='其他'&&!profile.roleOther){document.getElementById('registration-error').textContent='请填写完整登记信息';return;}
+        showRegisteredProfile(profile);enterRegisteredPortal(profile,pendingScreening||new URLSearchParams(location.search).get('sid')||'');
+      });
+      if(location.pathname.startsWith('/cra/portal/')){
+        try{const response=await fetch('/cra/portal/session',{credentials:'same-origin',cache:'no-store'});if(response.ok){showRegisteredProfile((await response.json()).profile);return;}}catch{}
+        location.href='/cra/portal/';return;
+      }
+      if(location.pathname.startsWith('/cra/calculator'))return;
+      if(new URLSearchParams(location.search).has('signedout')){try{localStorage.removeItem(registrationStorageKey);}catch{}}
+      try{const profile=JSON.parse(localStorage.getItem(registrationStorageKey)||'null');if(profile&&(!profile.rememberUntil||profile.rememberUntil>Date.now()))showRegisteredProfile(profile);}catch{}
+
     }
 
     async function lookupScreening() {
+      setUsageMode('audit');
       const digits=document.getElementById('sid').value.trim();
       if(!/^\d{6}$/.test(digits))return showToast('请输入CN后面的6位数字');
-      if(!location.pathname.startsWith('/cra/calculator')) { location.href='https://14.103.73.237/cra/calculator/?sid='+digits;return; }
+      if(!/^\/cra\/(?:portal\/)?calculator/.test(location.pathname)) { pendingScreening=digits;if(!registeredProfile){showRegistration();return;}return enterRegisteredPortal(registeredProfile,digits); }
       const button=document.getElementById('lookup-btn'),status=document.getElementById('import-status');button.disabled=true;status.textContent='查询中…';
       try {
-        const response=await fetch('/cra/api/calculator/lookup?screening='+digits,{credentials:'same-origin',cache:'no-store'});
+        const response=await fetch(calculatorApiPath('/lookup?screening='+digits),{credentials:'same-origin',cache:'no-store'});
         if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('请先登录后查询');
         const data=await response.json();if(!response.ok)throw Error(response.status===404?'未查找到相关数据':data.error||'查询失败');
         if(data.screeningId!=='CN'+digits||data.locked!==true)throw Error('返回的筛选号不匹配');
-        lockedBaseline=null;lockedResult=null;linkedRequestId=null;lastReport=null;
+        lockedBaseline=null;lockedResult=null;linkedRequestId=null;document.getElementById('review-result-link').hidden=true;document.querySelectorAll('#v1-fields input,#v1-fields select').forEach(e=>{e.disabled=false;if(e.type==='checkbox')e.checked=false;else e.value=e.tagName==='SELECT'?'unknown':'';});document.getElementById('v1-result').textContent='';document.getElementById('v1-drugs').hidden=true;lastReport=null;
         document.getElementById('result-panel').style.display='none';document.getElementById('age').value=data.age;setSex(data.sex==='女'?'F':'M');
         document.getElementById('scr-tbody').replaceChildren();rowId=0;addRow('screening');
         for(const point of data.rows){
@@ -1152,34 +1321,50 @@
           const select=row.querySelector('.quality-select');if(!point.included){const option=new Option(point.ruleExcluded?'直接eGFR·不纳入':point.exclusionReason||'人工排除','locked-excluded');select.add(option);select.value='locked-excluded';}
           row.dataset.locked='true';row.querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
         }
-        lockedBaseline=data;document.getElementById('age').disabled=true;document.querySelectorAll('.add-btn,.hdr-actions button').forEach(b=>b.disabled=true);document.querySelector('.calc-btn').disabled=false;
+        lockedBaseline=data;document.getElementById('age').disabled=true;document.querySelectorAll('.demo-btns button[onclick^="fillDemo"]').forEach(b=>b.disabled=true);document.querySelector('.add-btn').disabled=false;document.querySelector('.add-btn').textContent='＋ 补充历史肌酐点';document.querySelector('.calc-btn').disabled=false;document.querySelector('.calc-btn span:first-child').textContent='计算';
         status.textContent='（'+data.initials+'）信息导入成功';status.style.color='var(--teal)';hideError();
       } catch(error) {status.textContent=error.message;status.style.color='var(--red)';if(lockedBaseline)document.querySelector('.calc-btn').disabled=true;}
       finally {button.disabled=false;}
     }
-    async function calculateLinked() {
+    function invalidatePreview(){if(lockedResult)return;const send=document.getElementById('submit-review');send.disabled=true;send.textContent='请先重新计算';if(!send.hidden)document.getElementById('v1-delivery').textContent='输入已修改，请重新计算';}
+    async function calculateLinked(submit=false) {
+      if(submit&&document.getElementById('submit-review').disabled)return;
       if(lockedResult)return showToast('本版判定已锁定；更正请重新查询并生成新版本');
       if(document.getElementById('sid').value.trim()!==lockedBaseline.screeningId.slice(2))return showError('编号已变化，请重新查询');
       const row=document.querySelector('#scr-tbody tr[data-type="screening"]');
       const date=parseDateParts(row.querySelector('.dt-year').value,row.querySelector('.dt-month').value,row.querySelector('.dt-day').value),cr=Number(row.querySelector('.scr-inp').value);
       if(!date||!Number.isFinite(cr)||cr<10||cr>2000)return showError('请补充筛选期日期和血肌酐值');
-      const button=document.querySelector('.calc-btn');button.disabled=true;linkedRequestId??=crypto.randomUUID();
+      const history=[];
+      for(const item of document.querySelectorAll('#scr-tbody tr[data-supplemental="true"]')){
+        const parts=['.dt-year','.dt-month','.dt-day'].map(s=>item.querySelector(s).value.trim()),value=item.querySelector('.scr-inp').value.trim();if(!value&&parts.every(v=>!v))continue;
+        const date=parseDateParts(...parts);if(!date||!value||!Number.isFinite(Number(value))||Number(value)<10||Number(value)>2000)return showError('请补齐补充历史记录的日期和血肌酐值');
+        history.push({date:date.toISOString().slice(0,10),creatinine:Number(value),status:item.querySelector('.quality-select').value});
+      }
+      const v1={uacr:document.getElementById('v1-uacr').value,cvd:document.getElementById('v1-cvd').value,planned:document.getElementById('v1-planned').value,drugs:[...document.querySelectorAll('#v1-drugs input:checked')].map(e=>e.value)};
+      const button=document.querySelector('.calc-btn'),editables=[...document.querySelectorAll('#v1-fields input:not(:disabled),#v1-fields select:not(:disabled),#scr-tbody input:not(:disabled),#scr-tbody select:not(:disabled),#scr-tbody button:not(:disabled),.add-btn:not(:disabled)')];
+      editables.forEach(e=>e.disabled=true);document.getElementById('lookup-btn').disabled=true;document.getElementById('sid').disabled=true;document.getElementById('mode-free').disabled=true;document.getElementById('mode-audit').disabled=true;document.getElementById('reset-top').disabled=true;
+      button.disabled=true;button.querySelector('span:first-child').textContent='正在生成判定…';linkedRequestId??=crypto.randomUUID();
       try {
-        const response=await fetch('/cra/api/calculator/save',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest,date:date.toISOString().slice(0,10),creatinine:cr})});
+        const response=await fetch(calculatorApiPath(submit?'/save':'/preview'),{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest,date:date.toISOString().slice(0,10),creatinine:cr,history,v1})});
         if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('登录已过期，请重新登录');
-        const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');lockedResult=result;
+        const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');usageEvent('calculate');if(submit)lockedResult=result;renderV1Decision(result.screening);document.getElementById('v1-delivery').textContent=submit?'正在回传项目组审核…':'尚未回传，可修改后重新计算';const send=document.getElementById('submit-review');send.hidden=false;send.disabled=submit;send.textContent=submit?'回传审核中…':'确认数据无误，锁定数据，回传项目组复核';
         const c=result.calculation,points=c.points||[],slope=c.state==='ready'?c.annualSlope:null;
-        document.getElementById('r-last-egfr').textContent=points.length?points[points.length-1].egfr.toFixed(1):'待核实';document.getElementById('r-slope').textContent=slope==null?'待核实':Number(slope.toFixed(2)).toFixed(2);document.getElementById('r-r2').textContent=c.state==='ready'?c.r2.toFixed(3):'—';
-        document.getElementById('verdict-reasons').textContent=result.conclusion.reasons?.length?'判定详情：'+result.conclusion.reasons.join('；')+'。':'';document.getElementById('verdict-title').textContent=result.conclusion.shortConclusion;document.getElementById('verdict-desc').textContent='本版自动计算结果已固定保存，正在回传阿里云；不等于正式筛选审核通过。';document.getElementById('verdict-icon').textContent='✓';
+        document.getElementById('r-last-egfr').textContent=points.length?points[points.length-1].egfr.toFixed(1):'待核实';document.getElementById('r-slope').textContent=slope==null?'待核实':(Number(slope.toFixed(2))>0?'+':'')+Number(slope.toFixed(2)).toFixed(2);document.getElementById('r-r2').textContent=c.state==='ready'?c.r2.toFixed(3):'—';
+        document.getElementById('verdict-reasons').textContent=result.conclusion.reasons?.length?'判定详情：'+result.conclusion.reasons.join('；')+'。':'';document.getElementById('verdict-title').textContent=result.conclusion.meetsRequirements?(result.conclusion.annualDecline>5?'符合':'不符合'):'数据不足';document.getElementById('verdict-title').style.color=!result.conclusion.meetsRequirements?'var(--yellow)':result.conclusion.annualDecline>5?'var(--green)':'var(--red)';document.getElementById('verdict-desc').textContent='';button.querySelector('span:first-child').textContent='回传审核中…';document.getElementById('verdict-icon').textContent='';
         const detail=document.getElementById('detail-card');detail.style.whiteSpace='pre-wrap';detail.textContent=result.narrative;
         if(c.state==='ready'&&points.length){const t0=Date.parse(points[0].date);renderChart(points.map(p=>(Date.parse(p.date)-t0)/YEAR_MS),points.map(p=>p.egfr),points.map(p=>p.date),c.annualSlope,c.intercept);}
-        document.getElementById('result-panel').style.display='block';row.querySelectorAll('input,button').forEach(e=>e.disabled=true);hideError();
-        let tries=0;const check=async()=>{if(lockedResult?.id!==result.id)return;try{const res=await fetch('/cra/api/calculator/result/'+result.id,{credentials:'same-origin',cache:'no-store'});const receipt=await res.json();if(receipt.delivery==='received'){document.getElementById('verdict-desc').textContent='本版自动计算结果已锁定，已回传阿里云；尚待医学审核。';return;}if(String(receipt.delivery).startsWith('rejected:')){document.getElementById('verdict-desc').textContent='本版已保存；回传待核查：'+receipt.delivery.slice(9);return;}}catch{}if(++tries<20)setTimeout(check,3000);};setTimeout(check,1500);
-      } catch(error){showError(error.message);button.disabled=false;}
+        document.getElementById('result-panel').style.display='block';if(submit)row.querySelectorAll('input,button').forEach(e=>e.disabled=true);hideError();
+        if(!submit)return;
+        let tries=0;const check=async()=>{if(lockedResult?.id!==result.id)return;try{const res=await fetch(calculatorApiPath('/result/'+result.id),{credentials:'same-origin',cache:'no-store'});const receipt=await res.json();if(receipt.delivery==='received'){const resultLink=document.getElementById('review-result-link');resultLink.href=(location.pathname.startsWith('/cra/portal/')?'/cra/portal':'/cra')+'/review-result/'+encodeURIComponent(result.id);resultLink.hidden=false;document.getElementById('v1-delivery').textContent='已回传项目组审核';document.getElementById('verdict-desc').textContent='';button.querySelector('span:first-child').textContent='已计算';document.getElementById('submit-review').textContent='已回传审核';return;}if(String(receipt.delivery).startsWith('rejected:')){document.getElementById('v1-delivery').textContent='回传待核查';document.getElementById('verdict-desc').textContent='本版判定已保存，回传需要核查：'+receipt.delivery.slice(9);button.querySelector('span:first-child').textContent='回传待核查';return;}}catch{}if(++tries>=20){document.getElementById('v1-delivery').textContent='已保存，等待回传项目组审核';document.getElementById('verdict-desc').textContent='本版判定已保存，回传暂未完成，系统将自动重试。';}setTimeout(check,tries<20?3000:15000);};setTimeout(check,1500);
+      } catch(error){showError(error.message);button.disabled=false;button.querySelector('span:first-child').textContent='计算';editables.forEach(e=>e.disabled=false);}
+      finally{if(!lockedResult){editables.forEach(e=>e.disabled=false);button.disabled=false;button.querySelector('span:first-child').textContent='计算';}document.getElementById('lookup-btn').disabled=false;document.getElementById('sid').disabled=false;document.getElementById('mode-free').disabled=false;document.getElementById('mode-audit').disabled=false;document.getElementById('reset-top').disabled=false;}
     }
+
+    window.addEventListener('pageshow',event=>{if(event.persisted)usageEvent('visit');});
 
     /* ── INIT ── */
     window.addEventListener('DOMContentLoaded', () => {
+      setupControls();setupRegistration();for(const id of ['scr-tbody','v1-fields']){document.getElementById(id).addEventListener('input',invalidatePreview);document.getElementById(id).addEventListener('change',invalidatePreview);}document.querySelector('.add-btn').addEventListener('click',invalidatePreview);document.getElementById('scr-tbody').addEventListener('click',e=>{if(e.target.closest('button'))invalidatePreview();});
       setTimeout(()=>{const id=new URLSearchParams(location.search).get('sid');if(id&&/^\d{6}$/.test(id)){document.getElementById('sid').value=id;lookupScreening();}},0);
       addRow('screening');
       addRow('history');
@@ -1214,7 +1399,7 @@
         <button class="today-btn" onclick="setToday(${id})">今天</button>
       </div>
     </td>
-    <td><input type="number" class="scr-inp nav-inp" data-id="${id}" placeholder="μmol/L" min="10" max="2000" step="0.1" /></td>
+    <td><input type="number" class="scr-inp nav-inp" data-id="${id}" placeholder="数值" min="10" max="2000" step="0.1" /></td>
     <td class="center">
       ${isScr
           ? '<span class="scr-badge screening">筛选期</span>'
@@ -1231,16 +1416,18 @@
     </td>`;
       if (isScr) tbody.insertBefore(tr, tbody.firstChild);
       else tbody.appendChild(tr);
+      if(lockedBaseline&&type==='history'){if(!lockedResult)linkedRequestId=null;tr.dataset.supplemental='true';tr.querySelector('.quality-select option[value="included"]').textContent='补充待审';tr.querySelector('.scr-inp').title='补充历史肌酐，待项目组核实';}
     }
 
     function delRow(id) {
+      if(lockedBaseline&&!lockedResult)linkedRequestId=null;
       const tr = document.querySelector(`#scr-tbody tr[data-id="${id}"]`);
       if (tr) tr.remove();
     }
 
     function setToday(id) {
       const t = new Date();
-      document.querySelector(`.dt-year[data-id="${id}"]`).value = String(t.getFullYear()).slice(2);
+      document.querySelector(`.dt-year[data-id="${id}"]`).value = String(t.getFullYear());
       document.querySelector(`.dt-month[data-id="${id}"]`).value = String(t.getMonth() + 1).padStart(2, '0');
       document.querySelector(`.dt-day[data-id="${id}"]`).value = String(t.getDate()).padStart(2, '0');
     }
@@ -1380,6 +1567,12 @@
     /* ── CALCULATE ── */
     function calculate() {
       if (lockedBaseline) return calculateLinked();
+      document.querySelectorAll('#v1-fields input,#v1-fields select').forEach(e=>{e.disabled=false;if(e.type==='checkbox')e.checked=false;else e.value=e.tagName==='SELECT'?'unknown':'';});
+      document.getElementById('v1-drugs').hidden=true;
+      setUsageMode(usageMode,false);
+      document.getElementById('v1-decision').hidden=true;
+      document.getElementById('review-result-link').hidden=true;
+      document.getElementById('submit-review').hidden=true;
       lastReport = null;
       document.getElementById('result-panel').style.display = 'none';
       hideError();
@@ -1445,6 +1638,7 @@
       const shortSpan = included[included.length-1].ts <= sixMonthBoundary;
       const v = protocolVerdict(annualDecline, referenceEgfr, r2, twoPoint, { shortSpan, prescreen, spanDays });
 
+      usageEvent('calculate');
       lastReport = { age, sex, included, excluded, referenceEgfr, slope, annualDecline, r2, twoPoint, shortSpan, prescreen, spanDays, verdict: v };
       renderResults({ slope, annualDecline, referenceEgfr, r2, v, xs, ys, labels, intercept, twoPoint, shortSpan, prescreen, spanDays, included, excluded });
     }
@@ -1454,7 +1648,7 @@
       document.getElementById('r-reference-label').textContent = prescreen ? '预筛末次 eGFR' : '筛选期 eGFR';
       document.getElementById('r-last-egfr').textContent = referenceEgfr.toFixed(1);
       const sEl = document.getElementById('r-slope');
-      sEl.textContent = (slope>0?'+':'') + Number(slope.toFixed(2)).toFixed(2);
+      sEl.textContent = (Number(slope.toFixed(2))>0?'+':'') + Number(slope.toFixed(2)).toFixed(2);
       sEl.className = 'metric-value ' + (v.color === 'green' ? 'mv-green' : v.color === 'red' ? 'mv-red' : v.color === 'yellow' ? 'mv-yellow' : 'mv-teal');
       const r2El = document.getElementById('r-r2');
       r2El.textContent = twoPoint ? '1.000*' : r2.toFixed(3);
@@ -1462,13 +1656,13 @@
       r2El.title = twoPoint ? '两点必然完美拟合，不代表数据质量' : 'R²仅作轨迹质量提示，不是方案判定阈值';
 
       const vc = document.getElementById('verdict-card');
-      vc.className = 'verdict-card vc-' + v.color;
+      vc.className = 'metric-card verdict-card vc-' + v.color;
       document.getElementById('verdict-icon').textContent = v.icon;
-      document.getElementById('verdict-title').textContent = v.title;
+      document.getElementById('verdict-title').textContent = shortSpan?'数据不足':v.rapid?'符合':'不符合';
       document.getElementById('verdict-desc').textContent = v.desc;
       document.getElementById('verdict-reasons').textContent = '';
       document.getElementById('verdict-title').style.color =
-        v.color === 'green' ? 'var(--green)' : v.color === 'red' ? 'var(--red)' : v.color === 'yellow' ? 'var(--yellow)' : 'var(--teal)';
+        shortSpan ? 'var(--yellow)' : v.rapid ? 'var(--green)' : 'var(--red)';
 
       renderChart(xs, ys, labels, slope, intercept);
       const sStr = (slope >= 0 ? '+' : '') + slope.toFixed(2);
@@ -1492,32 +1686,10 @@
         { x: labels[0], y: +(slope * xMin + intercept).toFixed(1) },
         { x: labels[labels.length - 1], y: +(slope * xMax + intercept).toFixed(1) }
       ];
-      const refMin = labels.map(l => ({ x: l, y: PROTOCOL.egfrMin }));
-      const refMax = labels.map(l => ({ x: l, y: PROTOCOL.egfrMax }));
-      const rapidBoundary = [
-        { x: labels[0], y: +ys[0].toFixed(1) },
-        { x: labels[labels.length - 1], y: +(ys[0] - PROTOCOL.rapidDecline * (xMax - xMin)).toFixed(1) }
-      ];
-
       chartInstance = new Chart(ctx, {
         data: {
           labels,
           datasets: [
-            {
-              type: 'line', label: `入选标准4下限 eGFR=${PROTOCOL.egfrMin}`, data: refMin,
-              borderColor: 'rgba(248,113,113,0.55)', borderWidth: 1.5, borderDash: [5, 4],
-              pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
-            },
-            {
-              type: 'line', label: `入选标准4上限 eGFR<${PROTOCOL.egfrMax}`, data: refMax,
-              borderColor: 'rgba(148,163,184,0.35)', borderWidth: 1.2, borderDash: [3, 5],
-              pointRadius: 0, fill: false, tension: 0, parsing: false, order: 4
-            },
-            {
-              type: 'line', label: '快速进展边界（-5/年）', data: rapidBoundary,
-              borderColor: 'rgba(248,113,113,0.75)', borderWidth: 1.6, borderDash: [7, 5],
-              pointRadius: 0, fill: false, tension: 0, parsing: false, order: 3
-            },
             {
               type: 'line', label: 'OLS 拟合线', data: fitData,
               borderColor: '#fb923c', borderWidth: 2.5,
@@ -1550,6 +1722,7 @@
               grid: { color: 'rgba(255,255,255,0.04)' }
             },
             y: {
+              beginAtZero: false, grace: '10%',
               ticks: { color: '#64748b', font: { size: 10 } },
               grid: { color: 'rgba(255,255,255,0.06)' },
               title: { display: true, text: 'eGFR (mL/min/1.73m²)', color: '#475569', font: { size: 10 } }
@@ -1557,6 +1730,28 @@
           }
         }
       });
+    }
+
+    function renderV1Decision(screening) {
+      const panel=document.getElementById('v1-decision');panel.hidden=!screening;
+      if(!screening)return;
+      const {inputs,matrix,state}=screening;
+      const tri=v=>v==='yes'?'有':v==='no'?'无':'未确定';
+      const rapid=matrix?.rapid==='yes'?'符合':matrix?.rapid==='no'?'不符合':'数据不足，未证实';
+      const outcome=document.getElementById('v1-outcome');outcome.textContent=({pass:'筛选成功',fail:'筛选失败',pending:'待补充，暂无法判定'})[state];outcome.dataset.state=state;
+      document.getElementById('v1-delivery').textContent='正在回传项目组审核…';
+      const facts=document.getElementById('v1-facts');facts.replaceChildren();
+      const entries=[['V1 eGFR',inputs.egfr==null?'未填写':Number(inputs.egfr).toFixed(2),'mL/min/1.73m²'],['UACR',inputs.uacr??'未填写','mg/g'],['CVD病史',tri(inputs.cvd),''],['CKD快速进展',rapid,''],['随机日启药计划',tri(inputs.planned),inputs.drugs?.join('、')||'']];
+      for(const [label,value,unit] of entries){const cell=document.createElement('div'),name=document.createElement('span'),val=document.createElement('strong'),hint=document.createElement('small');name.textContent=label;val.textContent=String(value);hint.textContent=unit;cell.append(name,val,hint);facts.append(cell);}
+      const host=document.getElementById('v1-matrix');host.replaceChildren();
+      if(matrix){
+        const table=document.createElement('table');table.className='v1-matrix-table';table.setAttribute('aria-label','入选标准4九宫格：各格为UACR要求');
+        host.append(table);const caption=table.createCaption();caption.textContent='入排标准4核对';
+        const thead=table.createTHead(),first=thead.insertRow();const egfrHead=document.createElement('th');egfrHead.rowSpan=2;egfrHead.scope='col';egfrHead.textContent='eGFR（mL/min/1.73 m²）';first.append(egfrHead);const uacrHead=document.createElement('th');uacrHead.colSpan=3;uacrHead.scope='colgroup';uacrHead.textContent='UACR（mg/g）';first.append(uacrHead);
+        const head=thead.insertRow();for(const column of matrix.columns){const th=document.createElement('th');th.scope='col';th.textContent=column.label;head.append(th);}
+        const body=table.createTBody();for(const row of matrix.rows){const tr=body.insertRow();const th=document.createElement('th');th.scope='row';th.textContent=row.label;tr.append(th);for(const cell of row.cells){const td=tr.insertCell();td.textContent=cell.threshold===0?'无限制':'≥ '+cell.threshold;if(cell.key===matrix.selectedKey){td.className='v1-selected '+state;td.setAttribute('aria-current','true');const tag=document.createElement('strong');tag.textContent='本例 · '+({pass:'符合',fail:'不符合',pending:'待补充'}[state]);td.append(document.createElement('br'),tag);}}}
+      }
+      document.getElementById('v1-result').textContent=screening.title+'。'+screening.text+'。';
     }
 
     function clinicalNarrative(r) {
@@ -1569,6 +1764,7 @@
 
     /* ── COPY REPORT ── */
     function copyReport() {
+      if (!lockedResult && lockedBaseline) return navigator.clipboard.writeText(document.getElementById('detail-card').textContent).then(()=>showToast('病历正文已复制')).catch(()=>showToast('请长按正文复制'));
       if (lockedResult) return navigator.clipboard.writeText(lockedResult.narrative).then(()=>showToast('病历正文已复制')).catch(()=>showToast('请长按正文复制'));
       if (!lastReport) return showToast('请先完成一次核查');
       const txt = clinicalNarrative(lastReport);
@@ -1584,8 +1780,21 @@
     }
 
     /* ── RESET ── */
+    function editCurrentData(){
+      if(document.getElementById('reset-top').disabled)return;
+      if(lockedResult){
+        lockedResult=null;linkedRequestId=null;
+        document.querySelectorAll('#v1-fields input,#v1-fields select,#scr-tbody tr[data-type="screening"] input,#scr-tbody tr[data-type="screening"] button,#scr-tbody tr[data-supplemental="true"] input,#scr-tbody tr[data-supplemental="true"] select,#scr-tbody tr[data-supplemental="true"] button,.add-btn').forEach(e=>e.disabled=false);
+        document.querySelector('.calc-btn').disabled=false;document.querySelector('.calc-btn span:first-child').textContent='计算';
+        document.getElementById('review-result-link').hidden=true;
+        invalidatePreview();showToast('已保留原回传版本；修改后可重新计算并回传新版本');
+      }
+      const target=lockedBaseline?document.querySelector('#scr-tbody tr[data-type="screening"] .scr-inp'):document.getElementById('age');
+      target.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true});
+    }
+
     function resetAll() {
-      lockedBaseline=null;lockedResult=null;linkedRequestId=null;document.getElementById('age').disabled=false;document.getElementById('import-status').textContent='';document.querySelectorAll('.add-btn,.calc-btn,.hdr-actions button').forEach(b=>b.disabled=false);
+      lockedBaseline=null;lockedResult=null;linkedRequestId=null;document.querySelector('.add-btn').textContent='＋ 添加历史记录点';document.getElementById('age').disabled=false;document.getElementById('import-status').textContent='';document.querySelectorAll('.add-btn,.calc-btn,.demo-btns button[onclick^="fillDemo"]').forEach(b=>b.disabled=false);
       document.getElementById('sid').value = '';
       document.getElementById('age').value = '';
       setSex('M');
@@ -1594,6 +1803,12 @@
       addRow('screening');
       addRow('history'); addRow('history'); addRow('history');
       document.getElementById('result-panel').style.display = 'none';
+      document.querySelectorAll('#v1-fields input,#v1-fields select').forEach(e=>{e.disabled=false;if(e.type==='checkbox')e.checked=false;else e.value=e.tagName==='SELECT'?'unknown':'';});
+      document.getElementById('v1-drugs').hidden=true;
+      setUsageMode(usageMode,false);
+      document.getElementById('v1-decision').hidden=true;
+      document.getElementById('review-result-link').hidden=true;
+      document.getElementById('submit-review').hidden=true;
       lastReport = null;
       hideError();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1613,10 +1828,21 @@
     }
 
     /* ── DEMO AUTO-FILL ── */
+    async function fillV1Example(){
+      if(!['127.0.0.1','localhost'].includes(location.hostname))return;
+      if(!location.pathname.startsWith('/cra/portal/')){chooseAudit();return;}
+      resetAll();setUsageMode('audit');document.getElementById('sid').value='999001';await lookupScreening();
+      if(!lockedBaseline)return;
+      if(lockedBaseline.initials!=='DEMO')return showError('示例仅用于本地合成受试者');
+      const row=document.querySelector('#scr-tbody tr[data-type="screening"]');for(const [selector,value] of [['.dt-year','2026'],['.dt-month','10'],['.dt-day','24'],['.scr-inp','128']])row.querySelector(selector).value=value;
+      document.getElementById('v1-uacr').value='333';document.getElementById('v1-cvd').value='no';document.getElementById('v1-planned').value='no';document.getElementById('v1-drugs').hidden=true;
+      await calculateLinked(false);
+    }
+
     function fillDemo(type) {
       resetAll();
       document.getElementById('age').value = 58;
-      document.getElementById('sid').value = Math.floor(Math.random() * 90000) + 10000;
+      document.getElementById('sid').value = '';
 
       const now = new Date();
       const setRow = (tr, yearsAgo, crVal, quality = 'included') => {

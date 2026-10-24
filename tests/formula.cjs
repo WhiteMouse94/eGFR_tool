@@ -22,6 +22,7 @@ function run(rows){
   ctx.document.querySelectorAll=()=>rows;
   ctx.hideError=()=>{};ctx.showError=msg=>{throw Error(msg)};
   ctx.renderResults=data=>result=data;
+  ctx.setUsageMode=()=>{};
   ctx.calculate();return result;
 }
 for(const screening of [true,false]){
