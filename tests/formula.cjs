@@ -36,7 +36,7 @@ for(const [date,shortSpan] of [['2026-02-24',false],['2026-02-25',true],['2026-0
 }
 assert.throws(()=>run([row('history','2026-08-25',100),row('history','2026-08-25',120),row('history','2025-01-01',90)]),/同一天/);
 assert.throws(()=>run([row('history','2026-08-25',100),row('history','2025-08-25',90)]),/至少需要3/);
-const old=run([row('screening','2026-08-25',150),row('history','2018-08-25',90),row('history','2024-01-01',110)]);assert.equal(old.shortSpan,false);assert.equal(old.included.length,3);assert.match(ctx.clinicalNarrative({...old,verdict:old.v}),/纳入血肌酐/);
+const old=run([row('screening','2026-08-25',150),row('history','2018-08-25',90),row('history','2024-01-01',110)]);assert.equal(old.shortSpan,false);assert.equal(old.included.length,3);assert.match(ctx.clinicalNarrative({...old,verdict:old.v}),/纳入合格血肌酐/);
 assert.ok(!html.includes('id="protocol-path-card"'));
 assert.equal(ctx.protocolVerdict(5,50,.9,false).rapid,false);
 assert.equal(ctx.protocolVerdict(5.00001,50,.9,false).rapid,true);
