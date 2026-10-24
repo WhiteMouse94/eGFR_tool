@@ -1561,11 +1561,9 @@
     function clinicalNarrative(r) {
       const values = r.included.map(p => `${p.cr}（${p.date}）`).join('；');
       const rate = Number(r.slope.toFixed(2));
-      const conclusion = r.shortSpan ? '取点跨度未超过6个月，尚不能据此确认CKD快速进展。'
-        : r.verdict.rapid ? '本次eGFR年变化率低于−5 mL/min/1.73m²/年，数值支持CKD快速进展。'
-        : '本次eGFR年变化率未低于−5 mL/min/1.73m²/年，未支持CKD快速进展。';
-      const excluded = r.excluded.length ? '\n未纳入血肌酐（μmol/L）：'+r.excluded.map(p=>`${p.cr}（${p.date}，${qualityText[p.status]}）`).join('；')+'。' : '';
-      return `纳入血肌酐（μmol/L）：${values}。\n合格血肌酐共${r.included.length}个不同日期，时间跨度${r.spanDays}天。采用CKD-EPI 2009公式换算eGFR，经线性回归计算，eGFR年变化率为${rate>0?'+':''}${rate.toFixed(2)} mL/min/1.73m²/年。${conclusion}${excluded}`;
+      const enough = !r.shortSpan && new Set(r.included.map(p=>p.date)).size >= 3;
+      const conclusion = enough ? (r.verdict.rapid ? '符合CKD快速进展。' : '不符合CKD快速进展。') : '当前数据不足，未证实存在CKD快速进展。';
+      return `纳入合格血肌酐（μmol/L）：${values}。${enough ? `经估算，eGFR年变化率为${rate.toFixed(2)} mL/min/1.73m²/年，` : ''}${conclusion}`;
     }
 
     /* ── COPY REPORT ── */
