@@ -1038,6 +1038,8 @@
       .page .metrics-row .verdict-card{align-items:center;text-align:center}.page .metrics-row .verdict-card .metric-label,.page .metrics-row .verdict-title{width:100%;text-align:center}#submit-review[hidden]{display:none}
       #review-result-link{display:block;text-align:center;margin-top:10px;text-decoration:none}#review-result-link[hidden]{display:none}
       #submit-review{width:calc(100% - 32px);max-width:none;margin:0 16px 12px;box-sizing:border-box;white-space:normal;justify-content:center;text-align:center;padding:14px 12px;line-height:1.5;font-size:15px}.page .v1-matrix-table caption{text-align:center;font-weight:700;font-size:15px;padding:10px 0}
+      .year-wrap{display:inline-flex;align-items:center;flex-shrink:0}.year-prefix{font-size:12px;padding-left:3px;color:var(--text-2)}.page .dt-year{width:30px!important}.page .today-btn{display:inline-block;padding:5px 3px;font-size:11px;flex-shrink:0}.page .date-triple{gap:3px;flex-wrap:wrap}.page .dt-mday{width:32px}
+      .page .calc-wrap .calc-btn{font-size:15px;line-height:1.5;white-space:normal;justify-content:center;text-align:center;padding:14px 10px}
   </style>
 </head>
 
@@ -1066,7 +1068,7 @@
     <!-- Header -->
     <div class="hdr">
       <div class="hdr-top" style="flex-wrap: wrap; gap: 8px;">
-        <div class="mobile-toolbar"><div class="mobile-title"><div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div><h1>eGFR <span>年变化率计算器</span></h1></div><div class="top-tools"><button type="button" id="theme-quick" class="theme-btn" onclick="toggleTheme()" aria-label="切换白天／夜间模式" title="切换至夜间">☾</button><button type="button" id="settings-open" class="settings-trigger" aria-label="设置与说明">⚙ 设置与说明</button></div></div>
+        <div class="mobile-toolbar"><div class="mobile-title"><div class="hdr-badge">HRS-7535-307 · RENEW-CKD · 项目专用</div><h1>eGFR <span>年变化率计算器</span></h1></div><div class="top-tools"><button type="button" class="settings-trigger" id="published-results" onclick="openPublishedResults()">结果查询</button><button type="button" id="theme-quick" class="theme-btn" onclick="toggleTheme()" aria-label="切换白天／夜间模式" title="切换至夜间">☾</button><button type="button" id="settings-open" class="settings-trigger" aria-label="设置与说明">⚙ 设置与说明</button></div></div>
 
 
         <nav class="usage-modes" style="width:100%" aria-label="使用模式"><button id="mode-free" type="button" aria-pressed="true">日常模式</button><button id="mode-audit" type="button" aria-pressed="false">V1审核模式</button><button id="daily-example" type="button" onclick="fillDemo(1);calculate()" style="margin-left:auto">示例</button><button id="v1-example" type="button" hidden onclick="fillV1Example()" style="margin-left:auto">示例</button><button id="reset-top" type="button" onclick="resetAll()">清空重填</button></nav>
@@ -1189,7 +1191,7 @@
       <!-- Actions -->
       <div class="action-row">
         <button class="action-btn copy-btn" onclick="copyReport()">📋 复制病历正文</button>
-        <button class="action-btn reset-btn" onclick="editCurrentData()">修改数据</button>
+        <button class="action-btn reset-btn" onclick="withdrawSubmission()">数据有误，撤回提交</button>
       </div>
       <button id="submit-review" class="calc-btn" type="button" onclick="calculateLinked(true)" hidden>确认数据无误，锁定数据，回传项目组复核</button><a id="review-result-link" class="action-btn" hidden>查看审核结果</a>
       <section class="card" id="v1-decision" hidden><h2 class="card-title">V1筛选判定参考</h2><div class="v1-status-line"><div id="v1-outcome" role="status"></div><p id="v1-delivery"></p></div><div id="v1-facts" class="v1-fact-grid"></div><div id="v1-matrix"></div><p id="v1-result" hidden></p></section>
@@ -1211,7 +1213,7 @@
     let chartInstance = null;
     let isLight = true;
     let usageMode='free';
-    const MODE_HELP={"free": "日常模式：筛选期肌酐可留空。至少 <b>3 个不同日期</b>的合格点，最大时间跨度需超过6个月，若未超过6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。", "audit": "V1审核模式：查询试验参与者已认定的合格血肌酐值，填入筛选期血肌酐后自动判定。资格认定需要：至少 <b>3 个不同日期</b>的合格点，最大时间跨度需超过6个月，若未满足条件，结果仅为趋势估计，无法评估是否存在“快速进展”。若有额外数据可补充，最终判定结果将回传至项目组进行最终审核。"};
+    const MODE_HELP={"free": "日常模式：筛选期肌酐可留空。至少 <b>3 个不同日期</b>的合格点，最大时间跨度需超过6个月，若未超过6个月，结果仅为估算，不可作为证据，不能据此确认“快速进展”。AKI、感染或显著影响 eGFR 的用药期间检测值请选择排除。", "audit": "V1审核模式：查询试验参与者已认定的合格血肌酐值，填入筛选期血肌酐后自动判定。资格认定需要：至少 <b>3 个不同日期</b>的合格点，最大时间跨度需超过6个月，若未满足条件，结果仅为趋势估计，无法评估是否存在“快速进展”。若有额外数据可补充，最终判定结果将回传至项目组进行复核。"};
     let lastReport = null;
 
     /* ── THEME ── */
@@ -1226,7 +1228,7 @@
       const body=JSON.stringify({id:crypto.randomUUID(),visitor,event,mode:usageMode,page:location.pathname.startsWith('/cra/')?'calculator':'entry'});
       navigator.sendBeacon(portalOrigin()+'/cra/portal/visit',body);}catch{}
     }
-    function setUsageMode(mode,record=true){const changed=usageMode!==mode;usageMode=mode;document.getElementById('daily-example').hidden=mode!=='free';const localPreview=['127.0.0.1','localhost'].includes(location.hostname);document.getElementById('v1-example').hidden=mode!=='audit'||!localPreview;document.getElementById('reset-top').style.marginLeft=mode==='audit'&&!localPreview?'auto':'0';document.getElementById('v1-fields').hidden=mode!=='audit';if(!lockedResult)document.querySelector('.calc-btn span:first-child').textContent=mode==='audit'?'计算':'计算';document.getElementById('mode-help').innerHTML=MODE_HELP[mode];document.getElementById('mode-help-title').textContent=(mode==='free'?'日常模式':'V1审核模式')+'说明';document.getElementById('mode-help').closest('details').open=mode==='audit';document.getElementById('screening-lookup-row').hidden=mode!=='audit';document.getElementById('mode-free').setAttribute('aria-pressed',String(mode==='free'));document.getElementById('mode-audit').setAttribute('aria-pressed',String(mode==='audit'));if(record&&changed)usageEvent('mode');}
+    function setUsageMode(mode,record=true){const changed=usageMode!==mode;usageMode=mode;document.getElementById('daily-example').hidden=mode!=='free';const localPreview=['127.0.0.1','localhost'].includes(location.hostname);document.getElementById('v1-example').hidden=mode!=='audit'||!localPreview;document.getElementById('reset-top').style.marginLeft=mode==='audit'&&!localPreview?'auto':'0';document.getElementById('v1-fields').hidden=mode!=='audit';if(!lockedResult)document.querySelector('.calc-btn span:first-child').textContent=mode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';document.getElementById('mode-help').innerHTML=MODE_HELP[mode];document.getElementById('mode-help-title').textContent=(mode==='free'?'日常模式':'V1审核模式')+'说明';document.getElementById('mode-help').closest('details').open=false;document.getElementById('screening-lookup-row').hidden=mode!=='audit';document.getElementById('mode-free').setAttribute('aria-pressed',String(mode==='free'));document.getElementById('mode-audit').setAttribute('aria-pressed',String(mode==='audit'));if(record&&changed)usageEvent('mode');}
     function chooseAudit(){
       setUsageMode('audit');if(location.pathname.startsWith('/cra/portal/'))return;
       if(location.pathname.startsWith('/cra/calculator'))return;
@@ -1247,6 +1249,7 @@
     }
 
     function calculatorApiPath(path){return (location.pathname.startsWith('/cra/portal/')?'/cra/portal/api/calculator':'/cra/api/calculator')+path;}
+    function openPublishedResults(){location.href=portalOrigin()+'/cra/portal/results';}
     function portalOrigin(){return ['localhost','127.0.0.1'].includes(location.hostname)?location.origin:'https://14.103.73.237';}
     function showRegisteredProfile(profile){
       registeredProfile=profile;try{localStorage.setItem(registrationStorageKey,JSON.stringify(profile));}catch{}
@@ -1316,27 +1319,27 @@
         for(const point of data.rows){
           if(point.creatinine==null)continue;
           addRow('history');const row=document.getElementById('scr-tbody').lastElementChild;
-          const [year,month,day]=(point.date||'').split('-');row.querySelector('.dt-year').value=year||'';row.querySelector('.dt-month').value=month||'';row.querySelector('.dt-day').value=day||'';
+          const [year,month,day]=(point.date||'').split('-');setYear(row.querySelector('.dt-year'),year||'');row.querySelector('.dt-month').value=month||'';row.querySelector('.dt-day').value=day||'';
           const valueInput=row.querySelector('.scr-inp');if(point.creatinine!=null){valueInput.value=point.unit==='mg/dL'?Number(point.creatinine)*88.4:point.creatinine;}else{valueInput.type='text';valueInput.value='eGFR '+point.egfr;valueInput.title='原已审直接eGFR点，按原取点保留；不是血肌酐值';}
           const select=row.querySelector('.quality-select');if(!point.included){const option=new Option(point.ruleExcluded?'直接eGFR·不纳入':point.exclusionReason||'人工排除','locked-excluded');select.add(option);select.value='locked-excluded';}
           row.dataset.locked='true';row.querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
         }
-        lockedBaseline=data;document.getElementById('age').disabled=true;document.querySelectorAll('.demo-btns button[onclick^="fillDemo"]').forEach(b=>b.disabled=true);document.querySelector('.add-btn').disabled=false;document.querySelector('.add-btn').textContent='＋ 补充历史肌酐点';document.querySelector('.calc-btn').disabled=false;document.querySelector('.calc-btn span:first-child').textContent='计算';
+        lockedBaseline=data;document.getElementById('age').disabled=true;document.querySelectorAll('.demo-btns button[onclick^="fillDemo"]').forEach(b=>b.disabled=true);document.querySelector('.add-btn').disabled=false;document.querySelector('.add-btn').textContent='＋ 补充历史肌酐点';document.querySelector('.calc-btn').disabled=false;document.querySelector('.calc-btn span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';
         status.textContent='（'+data.initials+'）信息导入成功';status.style.color='var(--teal)';hideError();
       } catch(error) {status.textContent=error.message;status.style.color='var(--red)';if(lockedBaseline)document.querySelector('.calc-btn').disabled=true;}
       finally {button.disabled=false;}
     }
     function invalidatePreview(){if(lockedResult)return;const send=document.getElementById('submit-review');send.disabled=true;send.textContent='请先重新计算';if(!send.hidden)document.getElementById('v1-delivery').textContent='输入已修改，请重新计算';}
     async function calculateLinked(submit=false) {
-      if(submit&&document.getElementById('submit-review').disabled)return;
+
       if(lockedResult)return showToast('本版判定已锁定；更正请重新查询并生成新版本');
       if(document.getElementById('sid').value.trim()!==lockedBaseline.screeningId.slice(2))return showError('编号已变化，请重新查询');
       const row=document.querySelector('#scr-tbody tr[data-type="screening"]');
-      const date=parseDateParts(row.querySelector('.dt-year').value,row.querySelector('.dt-month').value,row.querySelector('.dt-day').value),cr=Number(row.querySelector('.scr-inp').value);
+      const date=parseDateParts(readYear(row.querySelector('.dt-year')),row.querySelector('.dt-month').value,row.querySelector('.dt-day').value),cr=Number(row.querySelector('.scr-inp').value);
       if(!date||!Number.isFinite(cr)||cr<10||cr>2000)return showError('请补充筛选期日期和血肌酐值');
       const history=[];
       for(const item of document.querySelectorAll('#scr-tbody tr[data-supplemental="true"]')){
-        const parts=['.dt-year','.dt-month','.dt-day'].map(s=>item.querySelector(s).value.trim()),value=item.querySelector('.scr-inp').value.trim();if(!value&&parts.every(v=>!v))continue;
+        const parts=['.dt-year','.dt-month','.dt-day'].map(s=>s==='.dt-year'?readYear(item.querySelector(s)):item.querySelector(s).value.trim()),value=item.querySelector('.scr-inp').value.trim();if(!value&&parts.every(v=>!v))continue;
         const date=parseDateParts(...parts);if(!date||!value||!Number.isFinite(Number(value))||Number(value)<10||Number(value)>2000)return showError('请补齐补充历史记录的日期和血肌酐值');
         history.push({date:date.toISOString().slice(0,10),creatinine:Number(value),status:item.querySelector('.quality-select').value});
       }
@@ -1347,7 +1350,7 @@
       try {
         const response=await fetch(calculatorApiPath(submit?'/save':'/preview'),{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest,date:date.toISOString().slice(0,10),creatinine:cr,history,v1})});
         if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('登录已过期，请重新登录');
-        const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');usageEvent('calculate');if(submit)lockedResult=result;renderV1Decision(result.screening);document.getElementById('v1-delivery').textContent=submit?'正在回传项目组审核…':'尚未回传，可修改后重新计算';const send=document.getElementById('submit-review');send.hidden=false;send.disabled=submit;send.textContent=submit?'回传审核中…':'确认数据无误，锁定数据，回传项目组复核';
+        const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');usageEvent('calculate');if(submit)lockedResult=result;renderV1Decision(result.screening);document.getElementById('v1-delivery').textContent=submit?'正在回传项目组审核…':'尚未回传，可修改后重新计算';const send=document.getElementById('submit-review');send.hidden=true;send.disabled=submit;send.textContent=submit?'回传审核中…':'确认数据无误，锁定数据，回传项目组复核';
         const c=result.calculation,points=c.points||[],slope=c.state==='ready'?c.annualSlope:null;
         document.getElementById('r-last-egfr').textContent=points.length?points[points.length-1].egfr.toFixed(1):'待核实';document.getElementById('r-slope').textContent=slope==null?'待核实':(Number(slope.toFixed(2))>0?'+':'')+Number(slope.toFixed(2)).toFixed(2);document.getElementById('r-r2').textContent=c.state==='ready'?c.r2.toFixed(3):'—';
         document.getElementById('verdict-reasons').textContent=result.conclusion.reasons?.length?'判定详情：'+result.conclusion.reasons.join('；')+'。':'';document.getElementById('verdict-title').textContent=result.conclusion.meetsRequirements?(result.conclusion.annualDecline>5?'符合':'不符合'):'数据不足';document.getElementById('verdict-title').style.color=!result.conclusion.meetsRequirements?'var(--yellow)':result.conclusion.annualDecline>5?'var(--green)':'var(--red)';document.getElementById('verdict-desc').textContent='';button.querySelector('span:first-child').textContent='回传审核中…';document.getElementById('verdict-icon').textContent='';
@@ -1356,8 +1359,8 @@
         document.getElementById('result-panel').style.display='block';if(submit)row.querySelectorAll('input,button').forEach(e=>e.disabled=true);hideError();
         if(!submit)return;
         let tries=0;const check=async()=>{if(lockedResult?.id!==result.id)return;try{const res=await fetch(calculatorApiPath('/result/'+result.id),{credentials:'same-origin',cache:'no-store'});const receipt=await res.json();if(receipt.delivery==='received'){const resultLink=document.getElementById('review-result-link');resultLink.href=(location.pathname.startsWith('/cra/portal/')?'/cra/portal':'/cra')+'/results#result-'+encodeURIComponent(result.id);resultLink.hidden=false;document.getElementById('v1-delivery').textContent='已回传项目组审核';document.getElementById('verdict-desc').textContent='';button.querySelector('span:first-child').textContent='已计算';document.getElementById('submit-review').textContent='已回传审核';return;}if(String(receipt.delivery).startsWith('rejected:')){document.getElementById('v1-delivery').textContent='回传待核查';document.getElementById('verdict-desc').textContent='本版判定已保存，回传需要核查：'+receipt.delivery.slice(9);button.querySelector('span:first-child').textContent='回传待核查';return;}}catch{}if(++tries>=20){document.getElementById('v1-delivery').textContent='已保存，等待回传项目组审核';document.getElementById('verdict-desc').textContent='本版判定已保存，回传暂未完成，系统将自动重试。';}setTimeout(check,tries<20?3000:15000);};setTimeout(check,1500);
-      } catch(error){showError(error.message);button.disabled=false;button.querySelector('span:first-child').textContent='计算';editables.forEach(e=>e.disabled=false);}
-      finally{if(!lockedResult){editables.forEach(e=>e.disabled=false);button.disabled=false;button.querySelector('span:first-child').textContent='计算';}document.getElementById('lookup-btn').disabled=false;document.getElementById('sid').disabled=false;document.getElementById('mode-free').disabled=false;document.getElementById('mode-audit').disabled=false;document.getElementById('reset-top').disabled=false;}
+      } catch(error){showError(error.message);button.disabled=false;button.querySelector('span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';editables.forEach(e=>e.disabled=false);}
+      finally{if(!lockedResult){editables.forEach(e=>e.disabled=false);button.disabled=false;button.querySelector('span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';}document.getElementById('lookup-btn').disabled=false;document.getElementById('sid').disabled=false;document.getElementById('mode-free').disabled=false;document.getElementById('mode-audit').disabled=false;document.getElementById('reset-top').disabled=false;}
     }
 
     window.addEventListener('pageshow',event=>{if(event.persisted)usageEvent('visit');});
@@ -1393,9 +1396,9 @@
       tr.innerHTML = `
     <td>
       <div class="date-triple">
-        <input type="text" inputmode="numeric" class="dt-year nav-inp" style="width:52px" data-id="${id}" data-min="1900" data-max="2100" placeholder="年" />
-        <input type="text" inputmode="numeric" class="dt-mday dt-month nav-inp dt-pad" data-id="${id}" data-min="1" data-max="12" placeholder="MM" />
-        <input type="text" inputmode="numeric" class="dt-mday dt-day nav-inp dt-pad"   data-id="${id}" data-min="1" data-max="31" placeholder="DD" />
+        <span class="year-wrap"><span class="year-prefix">20</span><input type="text" inputmode="numeric" class="dt-year nav-inp" maxlength="2" data-id="${id}" placeholder="YY" /></span>
+        <input type="text" inputmode="numeric" class="dt-mday dt-month nav-inp dt-pad" data-id="${id}" data-min="1" data-max="12" placeholder="MM" maxlength="2" />
+        <input type="text" inputmode="numeric" class="dt-mday dt-day nav-inp dt-pad"   data-id="${id}" data-min="1" data-max="31" placeholder="DD" maxlength="2" />
         <button class="today-btn" onclick="setToday(${id})">今天</button>
       </div>
     </td>
@@ -1427,7 +1430,7 @@
 
     function setToday(id) {
       const t = new Date();
-      document.querySelector(`.dt-year[data-id="${id}"]`).value = String(t.getFullYear());
+      setYear(document.querySelector(`.dt-year[data-id="${id}"]`),String(t.getFullYear()));
       document.querySelector(`.dt-month[data-id="${id}"]`).value = String(t.getMonth() + 1).padStart(2, '0');
       document.querySelector(`.dt-day[data-id="${id}"]`).value = String(t.getDate()).padStart(2, '0');
     }
@@ -1503,6 +1506,10 @@
       medicine: '药物影响·排除', other: '其他异常·排除'
     };
 
+    function setYear(input,year){const value=String(year);input.dataset.century=value.length===4?value.slice(0,2):'20';input.value=value.length===4?value.slice(2):value;input.previousElementSibling.textContent=input.dataset.century;}
+    function readYear(input){const value=input.value.trim();return value.length===2?(input.dataset?.century||'20')+value:value;}
+    document.addEventListener('input',event=>{const input=event.target;if(!input.matches('.dt-year,.dt-month,.dt-day'))return;input.value=input.value.replace(/\D/g,'').slice(0,2);if(input.value.length!==2)return;const row=input.closest('tr');if(input.classList.contains('dt-year'))row.querySelector('.dt-month').focus();else if(input.classList.contains('dt-month'))row.querySelector('.dt-day').focus();});
+    document.addEventListener('focusout',event=>{const input=event.target;if(input.matches('.dt-month,.dt-day')&&/^\d$/.test(input.value))input.value=input.value.padStart(2,'0');});
     function parseDateParts(y2, mRaw, dRaw) {
       const year = String(y2).length === 2 ? 2000 + Number(y2) : Number(y2), month = Number(mRaw), day = Number(dRaw);
       if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return null;
@@ -1521,6 +1528,7 @@
     function protocolVerdict(annualDecline, referenceEgfr, r2, twoPoint, { shortSpan = false, prescreen = false, spanDays = 0 } = {}) {
       const needsReview = twoPoint || r2 < PROTOCOL.r2Review;
       const referenceLabel = prescreen ? '预筛末次' : '筛选期';
+      if(twoPoint)return {color:'yellow',icon:'⚠️',rapid:false,title:'数据不足',desc:'仅有2个不同日期的合格点，结果仅为趋势估算，无法评估是否存在CKD快速进展。'};
       if (shortSpan) {
         return {
           color: 'yellow', icon: '⚠️', rapid: false,
@@ -1565,8 +1573,19 @@
     }
 
     /* ── CALCULATE ── */
+    async function calculateAuditAfterLookup(){
+      const sid=document.getElementById('sid').value.trim();if(!/^\d{6}$/.test(sid))return showError('V1提交请先填写筛选号并查询；历史点不足也可以提交复核。');
+      const screening=document.querySelector('#scr-tbody tr[data-type="screening"]');
+      const saved=screening?Object.fromEntries(['.dt-year','.dt-month','.dt-day','.scr-inp'].map(k=>[k,k==='.dt-year'?readYear(screening.querySelector(k)):screening.querySelector(k).value])):null;
+      const v1=Object.fromEntries(['v1-uacr','v1-cvd','v1-planned'].map(id=>[id,document.getElementById(id).value]));
+      await lookupScreening();if(!lockedBaseline)return;
+      const target=document.querySelector('#scr-tbody tr[data-type="screening"]');if(saved)for(const [selector,value] of Object.entries(saved)){if(selector==='.dt-year')setYear(target.querySelector(selector),value);else target.querySelector(selector).value=value;}
+      for(const [id,value] of Object.entries(v1))document.getElementById(id).value=value;
+      return calculateLinked(true);
+    }
     function calculate() {
-      if (lockedBaseline) return calculateLinked();
+      if(usageMode==='audit'&&!lockedBaseline)return calculateAuditAfterLookup();
+      if (lockedBaseline) return calculateLinked(true);
       document.querySelectorAll('#v1-fields input,#v1-fields select').forEach(e=>{e.disabled=false;if(e.type==='checkbox')e.checked=false;else e.value=e.tagName==='SELECT'?'unknown':'';});
       document.getElementById('v1-drugs').hidden=true;
       setUsageMode(usageMode,false);
@@ -1583,7 +1602,7 @@
       const points = [];
 
       for (const row of rows) {
-        const y2 = row.querySelector('.dt-year').value.trim();
+        const y2 = readYear(row.querySelector('.dt-year'));
         const mRaw = row.querySelector('.dt-month').value.trim();
         const dRaw = row.querySelector('.dt-day').value.trim();
         const crRaw = row.querySelector('.scr-inp').value.trim();
@@ -1602,7 +1621,7 @@
 
       const included = points.filter(point => point.status === 'included');
       const excluded = points.filter(point => point.status !== 'included');
-      if (included.length < 3) return showError('至少需要3个不同日期的合格取点；筛选期肌酐可留空。');
+      if (included.length < 2) return showError('日常模式至少需2个不同日期才能估算趋势；V1历史点不足仍可查询受试者后提交复核。');
       if (new Set(included.map(point => point.date)).size !== included.length) return showError('同一天只能纳入一个合格取点，请核对重复日期。');
 
       included.sort((a, b) => a.ts - b.ts);
@@ -1658,7 +1677,7 @@
       const vc = document.getElementById('verdict-card');
       vc.className = 'metric-card verdict-card vc-' + v.color;
       document.getElementById('verdict-icon').textContent = v.icon;
-      document.getElementById('verdict-title').textContent = shortSpan?'数据不足':v.rapid?'符合':'不符合';
+      document.getElementById('verdict-title').textContent = shortSpan||twoPoint?'数据不足':v.rapid?'符合':'不符合';
       document.getElementById('verdict-desc').textContent = v.desc;
       document.getElementById('verdict-reasons').textContent = '';
       document.getElementById('verdict-title').style.color =
@@ -1780,17 +1799,27 @@
     }
 
     /* ── RESET ── */
+    async function withdrawSubmission(){
+      if(!lockedResult){editCurrentData();return;}
+      const button=document.querySelector('.reset-btn');button.disabled=true;
+      try{
+        const id=lockedResult.id,res=await fetch(calculatorApiPath('/withdraw/'+id),{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:'{}'}),data=await res.json();if(!res.ok)throw Error(data.error||'撤回失败');
+        document.getElementById('v1-delivery').textContent='撤回申请处理中…';
+        const check=async()=>{if(lockedResult?.id!==id){button.disabled=false;return;}try{const r=await fetch(calculatorApiPath('/result/'+id),{credentials:'same-origin',cache:'no-store'});const result=await r.json();if(result.delivery==='withdrawn'){document.getElementById('v1-delivery').textContent='本版已撤回，可修改后重新提交';editCurrentData();button.disabled=false;return;}if(String(result.delivery).startsWith('withdraw_rejected:'))throw Error(result.delivery.slice(18));setTimeout(check,2000);}catch(error){showError(error.message);button.disabled=false;}};setTimeout(check,1000);
+      }catch(error){showError(error.message);button.disabled=false;}
+    }
+
     function editCurrentData(){
       if(document.getElementById('reset-top').disabled)return;
       if(lockedResult){
         lockedResult=null;linkedRequestId=null;
         document.querySelectorAll('#v1-fields input,#v1-fields select,#scr-tbody tr[data-type="screening"] input,#scr-tbody tr[data-type="screening"] button,#scr-tbody tr[data-supplemental="true"] input,#scr-tbody tr[data-supplemental="true"] select,#scr-tbody tr[data-supplemental="true"] button,.add-btn').forEach(e=>e.disabled=false);
-        document.querySelector('.calc-btn').disabled=false;document.querySelector('.calc-btn span:first-child').textContent='计算';
+        document.querySelector('.calc-btn').disabled=false;document.querySelector('.calc-btn span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';
         document.getElementById('review-result-link').hidden=true;
-        invalidatePreview();showToast('已保留原回传版本；修改后可重新计算并回传新版本');
+        invalidatePreview();showToast('原提交已撤回并保留记录；修改后可提交新版本');
       }
       const target=lockedBaseline?document.querySelector('#scr-tbody tr[data-type="screening"] .scr-inp'):document.getElementById('age');
-      target.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true});
+      target.scrollIntoView({behavior:'smooth',block:'center'});
     }
 
     function resetAll() {
@@ -1834,7 +1863,7 @@
       resetAll();setUsageMode('audit');document.getElementById('sid').value='999001';await lookupScreening();
       if(!lockedBaseline)return;
       if(lockedBaseline.initials!=='DEMO')return showError('示例仅用于本地合成受试者');
-      const row=document.querySelector('#scr-tbody tr[data-type="screening"]');for(const [selector,value] of [['.dt-year','2026'],['.dt-month','10'],['.dt-day','24'],['.scr-inp','128']])row.querySelector(selector).value=value;
+      const row=document.querySelector('#scr-tbody tr[data-type="screening"]');for(const [selector,value] of [['.dt-year','2026'],['.dt-month','10'],['.dt-day','24'],['.scr-inp','128']]){if(selector==='.dt-year')setYear(row.querySelector(selector),value);else row.querySelector(selector).value=value;}
       document.getElementById('v1-uacr').value='333';document.getElementById('v1-cvd').value='no';document.getElementById('v1-planned').value='no';document.getElementById('v1-drugs').hidden=true;
       await calculateLinked(false);
     }
@@ -1847,7 +1876,7 @@
       const now = new Date();
       const setRow = (tr, yearsAgo, crVal, quality = 'included') => {
         const d = new Date(now.getFullYear() - Math.floor(yearsAgo), now.getMonth() - Math.floor((yearsAgo % 1) * 12), now.getDate() - Math.floor(Math.random() * 15));
-        tr.querySelector('.dt-year').value = String(d.getFullYear());
+        setYear(tr.querySelector('.dt-year'),String(d.getFullYear()));
         tr.querySelector('.dt-month').value = String(d.getMonth() + 1).padStart(2, '0');
         tr.querySelector('.dt-day').value = String(d.getDate()).padStart(2, '0');
         tr.querySelector('.scr-inp').value = crVal;
