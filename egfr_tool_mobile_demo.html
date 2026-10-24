@@ -1085,7 +1085,7 @@
         <div class="verdict-icon" id="verdict-icon">—</div>
         <div>
           <div class="verdict-title" id="verdict-title">—</div>
-          <div class="verdict-desc" id="verdict-desc">—</div>
+          <div class="verdict-desc" id="verdict-desc">—</div><div class="verdict-desc" id="verdict-reasons"></div>
         </div>
       </div>
 
@@ -1170,7 +1170,7 @@
         const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');lockedResult=result;
         const c=result.calculation,points=c.points||[],slope=c.state==='ready'?c.annualSlope:null;
         document.getElementById('r-last-egfr').textContent=points.length?points[points.length-1].egfr.toFixed(1):'待核实';document.getElementById('r-slope').textContent=slope==null?'待核实':Number(slope.toFixed(2)).toFixed(2);document.getElementById('r-r2').textContent=c.state==='ready'?c.r2.toFixed(3):'—';
-        document.getElementById('verdict-title').textContent=result.conclusion.shortConclusion;document.getElementById('verdict-desc').textContent='本版自动计算结果已固定保存，正在回传阿里云；不等于正式筛选审核通过。';document.getElementById('verdict-icon').textContent='✓';
+        document.getElementById('verdict-reasons').textContent=result.conclusion.reasons?.length?'判定详情：'+result.conclusion.reasons.join('；')+'。':'';document.getElementById('verdict-title').textContent=result.conclusion.shortConclusion;document.getElementById('verdict-desc').textContent='本版自动计算结果已固定保存，正在回传阿里云；不等于正式筛选审核通过。';document.getElementById('verdict-icon').textContent='✓';
         const detail=document.getElementById('detail-card');detail.style.whiteSpace='pre-wrap';detail.textContent=result.narrative;
         if(c.state==='ready'&&points.length){const t0=Date.parse(points[0].date);renderChart(points.map(p=>(Date.parse(p.date)-t0)/YEAR_MS),points.map(p=>p.egfr),points.map(p=>p.date),c.annualSlope,c.intercept);}
         document.getElementById('result-panel').style.display='block';row.querySelectorAll('input,button').forEach(e=>e.disabled=true);hideError();
@@ -1466,6 +1466,7 @@
       document.getElementById('verdict-icon').textContent = v.icon;
       document.getElementById('verdict-title').textContent = v.title;
       document.getElementById('verdict-desc').textContent = v.desc;
+      document.getElementById('verdict-reasons').textContent = '';
       document.getElementById('verdict-title').style.color =
         v.color === 'green' ? 'var(--green)' : v.color === 'red' ? 'var(--red)' : v.color === 'yellow' ? 'var(--yellow)' : 'var(--teal)';
 
