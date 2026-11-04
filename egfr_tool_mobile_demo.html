@@ -1833,7 +1833,7 @@
       if(!screening)return;
       const {inputs,matrix,state}=screening;
       const tri=v=>v==='yes'?'有':v==='no'?'无':'未确定';
-      const rapid=matrix?.rapid==='yes'?'符合':matrix?.rapid==='no'?'不符合':'数据不足，未证实';
+      const rapid=matrix?.rapid==='yes'?'有':'无';
       const outcome=document.getElementById('v1-outcome');outcome.textContent=({pass:'筛选成功',fail:'筛选失败',pending:'待补充，暂无法判定'})[state];outcome.dataset.state=state;
       document.getElementById('v1-delivery').textContent='正在回传项目组审核…';
       const facts=document.getElementById('v1-facts');facts.replaceChildren();
