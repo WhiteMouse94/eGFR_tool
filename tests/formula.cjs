@@ -22,6 +22,7 @@ function run(rows){
   ctx.document.querySelectorAll=()=>rows;
   ctx.hideError=()=>{};ctx.showError=msg=>{throw Error(msg)};
   ctx.renderResults=data=>result=data;
+  ctx.renderSingleResult=data=>result=data;
   ctx.setUsageMode=()=>{};
   ctx.calculate();return result;
 }
@@ -38,8 +39,36 @@ for(const [date,shortSpan] of [['2026-02-24',false],['2026-02-25',true],['2026-0
 assert.throws(()=>run([row('history','2026-08-25',100),row('history','2026-08-25',120),row('history','2025-01-01',90)]),/同一天/);
 const two=run([row('history','2026-08-25',100),row('history','2025-08-25',90)]);assert.equal(two.v.rapid,false);assert.equal(two.v.color,'yellow');assert.match(two.v.desc,/2个不同日期/);
 const old=run([row('screening','2026-08-25',150),row('history','2018-08-25',90),row('history','2024-01-01',110)]);assert.equal(old.shortSpan,false);assert.equal(old.included.length,3);assert.match(ctx.clinicalNarrative({...old,verdict:old.v}),/纳入合格血肌酐/);
+// A lone SCr is converted without inventing a slope or progression verdict.
+for(const type of ['screening','history']) {
+  for(const date of ['', '2026-08-25']) {
+    const single=run([row(type,date,100),row('history','', ''),row('history','', '')]);
+    assert.equal(single.singlePoint,true);
+    assert.ok(Number.isFinite(single.referenceEgfr));
+    assert.equal(single.slope,undefined);
+    assert.equal(single.verdict,undefined);
+    if(!date || type==='screening')assert.equal(single.referenceEgfr,ctx.calcEGFR(100,58,'M'));
+    const narrative=ctx.clinicalNarrative(single);
+    assert.match(narrative,/CKD-EPI 2009/);
+    assert.match(narrative,/未计算年变化率，未评估CKD快速进展/);
+    assert.doesNotMatch(narrative,/符合CKD快速进展|年变化率为/);
+    if(!date)assert.match(narrative,/日期未填写，按所填年龄计算/);
+  }
+}
+const oneWithExcluded=run([row('screening','2026-08-25',100),row('history','2026-01-01',150,'aki')]);
+assert.equal(oneWithExcluded.singlePoint,true);assert.equal(oneWithExcluded.excluded.length,1);
+assert.match(ctx.clinicalNarrative(oneWithExcluded),/1个检测点已排除/);
+assert.throws(()=>run([]),/至少填写1个/);
+assert.throws(()=>run([row('history','',100,'aki')]),/至少填写1个/);
+assert.throws(()=>run([row('screening','',9)]),/SCr/);
+assert.throws(()=>run([row('screening','2026-02-30',100)]),/日期格式/);
+assert.throws(()=>run([row('screening','2026-08',100)]),/日期/);
+assert.throws(()=>run([row('screening','',100),row('history','2026-01-01',90)]),/多条记录请补齐/);
+assert.throws(()=>run([row('screening','2099-01-01',100)]),/晚于今天/);
+// Returning to multiple points restores the existing trend calculation.
+assert.ok(Number.isFinite(run([row('screening','2026-08-25',100),row('history','2025-08-25',90)]).slope));
 assert.ok(!html.includes('id="protocol-path-card"'));
 assert.equal(ctx.protocolVerdict(5,50,.9,false).rapid,false);
 assert.equal(ctx.protocolVerdict(5.00001,50,.9,false).rapid,true);
 assert.doesNotMatch(html,/2021|0\.9938|1\.012|88\.42/);
-console.log('PASS: 30 independent formula cases; prescreen/screening short-span warnings; six-calendar-month boundaries; duplicate dates; strict decline threshold.');
+console.log('PASS: 30 formula cases; single-point conversion, optional dates, exclusions and validation; multi-point regressions, six-month boundaries and strict decline threshold.');
