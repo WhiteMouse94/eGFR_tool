@@ -17,6 +17,7 @@ function row(type,date,cr,status='included'){
   return {dataset:{type},querySelector(s){return {value:({'.dt-year':y.slice(-2),'.dt-month':m,'.dt-day':d,'.scr-inp':String(cr||''),'.quality-select':status})[s]}}};
 }
 function run(rows){
+  vm.runInContext("usageMode='free'",ctx);
   let result;
   ctx.document.getElementById=id=>id==='age'?{value:'58'}:{style:{}};
   ctx.document.querySelectorAll=()=>rows;
@@ -39,36 +40,34 @@ for(const [date,shortSpan] of [['2026-02-24',false],['2026-02-25',true],['2026-0
 assert.throws(()=>run([row('history','2026-08-25',100),row('history','2026-08-25',120),row('history','2025-01-01',90)]),/同一天/);
 const two=run([row('history','2026-08-25',100),row('history','2025-08-25',90)]);assert.equal(two.v.rapid,false);assert.equal(two.v.color,'yellow');assert.match(two.v.desc,/2个不同日期/);
 const old=run([row('screening','2026-08-25',150),row('history','2018-08-25',90),row('history','2024-01-01',110)]);assert.equal(old.shortSpan,false);assert.equal(old.included.length,3);assert.match(ctx.clinicalNarrative({...old,verdict:old.v}),/纳入合格血肌酐/);
-// A lone SCr is converted without inventing a slope or progression verdict.
-for(const type of ['screening','history']) {
-  for(const date of ['', '2026-08-25']) {
-    const single=run([row(type,date,100),row('history','', ''),row('history','', '')]);
-    assert.equal(single.singlePoint,true);
-    assert.ok(Number.isFinite(single.referenceEgfr));
-    assert.equal(single.slope,undefined);
-    assert.equal(single.verdict,undefined);
-    if(!date || type==='screening')assert.equal(single.referenceEgfr,ctx.calcEGFR(100,58,'M'));
-    const narrative=ctx.clinicalNarrative(single);
-    assert.match(narrative,/CKD-EPI 2009/);
-    assert.match(narrative,/未计算年变化率，未评估CKD快速进展/);
-    assert.doesNotMatch(narrative,/符合CKD快速进展|年变化率为/);
-    if(!date)assert.match(narrative,/日期未填写，按所填年龄计算/);
-  }
+// Dedicated single-point mode uses only its three fields, independently of history.
+function runSingle(age,sex,cr){
+  vm.runInContext("usageMode='single'",ctx);
+  let result;
+  ctx.document.getElementById=id=>({value:({'single-age':String(age),'single-sex':sex,'single-cr':String(cr)})[id],style:{}});
+  ctx.document.querySelectorAll=()=>{throw Error('Single-point calculation must not read historical records');};
+  ctx.renderSingleResult=data=>result=data;
+  ctx.calculate();return result;
 }
-const oneWithExcluded=run([row('screening','2026-08-25',100),row('history','2026-01-01',150,'aki')]);
-assert.equal(oneWithExcluded.singlePoint,true);assert.equal(oneWithExcluded.excluded.length,1);
-assert.match(ctx.clinicalNarrative(oneWithExcluded),/1个检测点已排除/);
-assert.throws(()=>run([]),/至少填写1个/);
-assert.throws(()=>run([row('history','',100,'aki')]),/至少填写1个/);
-assert.throws(()=>run([row('screening','',9)]),/SCr/);
+for(const sex of ['M','F']) {
+  const single=runSingle(58,sex,100);
+  assert.equal(single.singlePoint,true);
+  assert.equal(single.referenceEgfr,ctx.calcEGFR(100,58,sex));
+  assert.equal(single.slope,undefined);
+  assert.equal(single.verdict,undefined);
+  assert.match(ctx.clinicalNarrative(single),/未计算年变化率，未评估CKD快速进展/);
+}
+for(const age of ['',17,101,'bad'])assert.throws(()=>runSingle(age,'M',100),/年龄/);
+for(const cr of ['',9,2001,'bad'])assert.throws(()=>runSingle(58,'M',cr),/血肌酐/);
+assert.throws(()=>runSingle(58,'',100),/性别/);
+assert.throws(()=>run([row('screening','2026-08-25',100)]),/至少需2个/);
+assert.throws(()=>run([row('screening','',100)]),/日期/);
 assert.throws(()=>run([row('screening','2026-02-30',100)]),/日期格式/);
-assert.throws(()=>run([row('screening','2026-08',100)]),/日期/);
-assert.throws(()=>run([row('screening','',100),row('history','2026-01-01',90)]),/多条记录请补齐/);
-assert.throws(()=>run([row('screening','2099-01-01',100)]),/晚于今天/);
+assert.throws(()=>run([row('screening','2099-01-01',100),row('history','2026-01-01',90)]),/晚于今天/);
 // Returning to multiple points restores the existing trend calculation.
 assert.ok(Number.isFinite(run([row('screening','2026-08-25',100),row('history','2025-08-25',90)]).slope));
 assert.ok(!html.includes('id="protocol-path-card"'));
 assert.equal(ctx.protocolVerdict(5,50,.9,false).rapid,false);
 assert.equal(ctx.protocolVerdict(5.00001,50,.9,false).rapid,true);
 assert.doesNotMatch(html,/2021|0\.9938|1\.012|88\.42/);
-console.log('PASS: 30 formula cases; single-point conversion, optional dates, exclusions and validation; multi-point regressions, six-month boundaries and strict decline threshold.');
+console.log('PASS: 30 formula cases; dedicated three-field single-point mode and validation; unchanged multi-point regressions, six-month boundaries and strict decline threshold.');
