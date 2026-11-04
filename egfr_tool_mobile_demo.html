@@ -1116,7 +1116,7 @@
       <div class="card-title">受试者信息 <span id="import-status" role="status" style="font-size:12px"></span></div>
       <div class="form-row" id="screening-lookup-row" hidden>
         <div class="form-group" style="flex:2">
-          <label>筛选号 <span style="color:var(--text-3);font-weight:400;">（选填）</span></label>
+          <label>筛选号</label>
           <div class="id-input-wrap">
             <span class="id-prefix">CN</span>
             <input type="text" class="sid-inp" id="sid" maxlength="6" inputmode="numeric" pattern="[0-9]{6}" autocomplete="off"
@@ -1338,7 +1338,7 @@
       try {
         const response=await fetch(calculatorApiPath('/lookup?screening='+digits),{credentials:'same-origin',cache:'no-store'});
         if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('请先登录后查询');
-        const data=await response.json();if(!response.ok)throw Error(response.status===404?'未查找到相关数据':data.error||'查询失败');
+        const data=await response.json();if(response.status===404){enableManualEntry(digits);return;}if(!response.ok)throw Error(data.error||'查询失败');
         if(data.screeningId!=='CN'+digits||data.locked!==true)throw Error('返回的筛选号不匹配');
         lockedBaseline=null;lockedResult=null;linkedRequestId=null;document.getElementById('review-result-link').hidden=true;document.querySelectorAll('#v1-fields input,#v1-fields select').forEach(e=>{e.disabled=false;if(e.type==='checkbox')e.checked=false;else e.value=e.tagName==='SELECT'?'unknown':'';});document.getElementById('v1-result').textContent='';document.getElementById('v1-drugs').hidden=true;lastReport=null;
         document.getElementById('result-panel').style.display='none';document.getElementById('age').value=data.age;setSex(data.sex==='女'?'F':'M');
@@ -1356,11 +1356,25 @@
       } catch(error) {status.textContent=error.message;status.style.color='var(--red)';if(lockedBaseline)document.querySelector('.calc-btn').disabled=true;}
       finally {button.disabled=false;}
     }
+    let linkedSubmitting=false;
+    function enableManualEntry(digits){
+      if(lockedBaseline&&lockedBaseline.screeningId!=='CN'+digits){resetAll();setUsageMode('audit');document.getElementById('sid').value=digits;}
+      else if(lockedBaseline&&!lockedBaseline.manual){document.querySelectorAll('#scr-tbody tr[data-locked="true"]').forEach(row=>row.remove());document.getElementById('age').value='';}
+      lockedBaseline={manual:true,screeningId:'CN'+digits};lockedResult=null;linkedRequestId=null;lastReport=null;
+      document.getElementById('age').disabled=false;
+      document.querySelectorAll('#scr-tbody tr[data-type="history"]').forEach(row=>{row.dataset.supplemental='true';});
+      document.querySelectorAll('#v1-fields input,#v1-fields select,#scr-tbody input,#scr-tbody select,#scr-tbody button,.add-btn,.calc-wrap .calc-btn').forEach(e=>e.disabled=false);
+      document.getElementById('result-panel').style.display='none';document.getElementById('review-result-link').hidden=true;
+      document.querySelector('.add-btn').textContent='＋ 添加历史记录点';
+      const status=document.getElementById('import-status');status.textContent='未找到历史数据，可手工填写后提交';status.style.color='var(--text-2)';hideError();
+    }
     function invalidatePreview(){if(lockedResult)return;const send=document.getElementById('submit-review');send.disabled=true;send.textContent='请先重新计算';if(!send.hidden)document.getElementById('v1-delivery').textContent='输入已修改，请重新计算';}
     async function calculateLinked(submit=false) {
 
       if(lockedResult)return showToast('本版判定已锁定；更正请重新查询并生成新版本');
       if(document.getElementById('sid').value.trim()!==lockedBaseline.screeningId.slice(2))return showError('编号已变化，请重新查询');
+      const age=Number(document.getElementById('age').value);
+      if(lockedBaseline.manual&&(!Number.isInteger(age)||age<18||age>120))return showError('请填写有效年龄（18–120岁）');
       const row=document.querySelector('#scr-tbody tr[data-type="screening"]');
       const date=parseDateParts(readYear(row.querySelector('.dt-year')),row.querySelector('.dt-month').value,row.querySelector('.dt-day').value),cr=Number(row.querySelector('.scr-inp').value);
       if(!date||!Number.isFinite(cr)||cr<10||cr>2000)return showError('请补充筛选期日期和血肌酐值');
@@ -1371,11 +1385,11 @@
         history.push({date:date.toISOString().slice(0,10),creatinine:Number(value),status:item.querySelector('.quality-select').value});
       }
       const v1={uacr:document.getElementById('v1-uacr').value,cvd:document.getElementById('v1-cvd').value,planned:document.getElementById('v1-planned').value,drugs:[...document.querySelectorAll('#v1-drugs input:checked')].map(e=>e.value)};
-      const button=document.querySelector('.calc-btn'),editables=[...document.querySelectorAll('#v1-fields input:not(:disabled),#v1-fields select:not(:disabled),#scr-tbody input:not(:disabled),#scr-tbody select:not(:disabled),#scr-tbody button:not(:disabled),.add-btn:not(:disabled)')];
-      editables.forEach(e=>e.disabled=true);document.getElementById('lookup-btn').disabled=true;document.getElementById('sid').disabled=true;document.getElementById('mode-free').disabled=true;document.getElementById('mode-audit').disabled=true;document.getElementById('mode-single').disabled=true;document.getElementById('reset-top').disabled=true;
+      const button=document.querySelector('.calc-btn'),editables=[...document.querySelectorAll('#v1-fields input:not(:disabled),#v1-fields select:not(:disabled),#scr-tbody input:not(:disabled),#scr-tbody select:not(:disabled),#scr-tbody button:not(:disabled),.add-btn:not(:disabled),#age:not(:disabled)')];
+      linkedSubmitting=true;editables.forEach(e=>e.disabled=true);document.getElementById('lookup-btn').disabled=true;document.getElementById('sid').disabled=true;document.getElementById('mode-free').disabled=true;document.getElementById('mode-audit').disabled=true;document.getElementById('mode-single').disabled=true;document.getElementById('reset-top').disabled=true;
       button.disabled=true;button.querySelector('span:first-child').textContent='正在生成判定…';linkedRequestId??=crypto.randomUUID();
       try {
-        const response=await fetch(calculatorApiPath(submit?'/save':'/preview'),{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest,date:date.toISOString().slice(0,10),creatinine:cr,history,v1})});
+        const response=await fetch(calculatorApiPath(submit?'/save':'/preview'),{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,...(lockedBaseline.manual?{inputMode:'manual',screeningId:lockedBaseline.screeningId,age,sex:sex==='F'?'女':'男'}:{subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest}),date:date.toISOString().slice(0,10),creatinine:cr,history,v1})});
         if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('登录已过期，请重新登录');
         const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');usageEvent('calculate');if(submit)lockedResult=result;renderV1Decision(result.screening);document.getElementById('v1-delivery').textContent=submit?'正在回传项目组审核…':'尚未回传，可修改后重新计算';const send=document.getElementById('submit-review');send.hidden=true;send.disabled=submit;send.textContent=submit?'回传审核中…':'确认数据无误，锁定数据，回传项目组复核';
         document.getElementById('result-panel').classList.remove('single-point');
@@ -1389,7 +1403,7 @@
         if(!submit)return;
         let tries=0;const check=async()=>{if(lockedResult?.id!==result.id)return;try{const res=await fetch(calculatorApiPath('/result/'+result.id),{credentials:'same-origin',cache:'no-store'});const receipt=await res.json();if(receipt.delivery==='received'){const resultLink=document.getElementById('review-result-link');resultLink.href=(location.pathname.startsWith('/cra/portal/')?'/cra/portal':'/cra')+'/results#result-'+encodeURIComponent(result.id);resultLink.hidden=false;document.getElementById('v1-delivery').textContent='已回传项目组审核';document.getElementById('verdict-desc').textContent='';button.querySelector('span:first-child').textContent='已计算';document.getElementById('submit-review').textContent='已回传审核';return;}if(String(receipt.delivery).startsWith('rejected:')){document.getElementById('v1-delivery').textContent='回传待核查';document.getElementById('verdict-desc').textContent='本版判定已保存，回传需要核查：'+receipt.delivery.slice(9);button.querySelector('span:first-child').textContent='回传待核查';return;}}catch{}if(++tries>=20){document.getElementById('v1-delivery').textContent='已保存，等待回传项目组审核';document.getElementById('verdict-desc').textContent='本版判定已保存，回传暂未完成，系统将自动重试。';}setTimeout(check,tries<20?3000:15000);};setTimeout(check,1500);
       } catch(error){showError(error.message);button.disabled=false;button.querySelector('span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';editables.forEach(e=>e.disabled=false);}
-      finally{if(!lockedResult){editables.forEach(e=>e.disabled=false);button.disabled=false;button.querySelector('span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';}document.getElementById('lookup-btn').disabled=false;document.getElementById('sid').disabled=false;document.getElementById('mode-free').disabled=false;document.getElementById('mode-audit').disabled=false;document.getElementById('mode-single').disabled=false;document.getElementById('reset-top').disabled=false;}
+      finally{linkedSubmitting=false;if(!lockedResult){editables.forEach(e=>e.disabled=false);button.disabled=false;button.querySelector('span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';}document.getElementById('lookup-btn').disabled=false;document.getElementById('sid').disabled=false;document.getElementById('mode-free').disabled=false;document.getElementById('mode-audit').disabled=false;document.getElementById('mode-single').disabled=false;document.getElementById('reset-top').disabled=false;}
     }
 
     window.addEventListener('pageshow',event=>{if(event.persisted)usageEvent('visit');});
@@ -1406,7 +1420,7 @@
 
     /* ── SEX TOGGLE ── */
     function setSex(s) {
-      if (lockedBaseline) return;
+      if (linkedSubmitting || lockedResult || lockedBaseline&&!lockedBaseline.manual) return;
       sex = s;
       document.getElementById('btn-male').classList.toggle('active', s === 'M');
       document.getElementById('btn-female').classList.toggle('active', s === 'F');
@@ -1616,7 +1630,7 @@
     }
 
     async function calculateAuditAfterLookup(){
-      const sid=document.getElementById('sid').value.trim();if(!/^\d{6}$/.test(sid))return showError('V1提交请先填写筛选号并查询；历史点不足也可以提交复核。');
+      const sid=document.getElementById('sid').value.trim();if(!/^\d{6}$/.test(sid))return showError('V1提交请填写筛选号；无历史数据也可手工填写后提交。');
       const screening=document.querySelector('#scr-tbody tr[data-type="screening"]');
       const saved=screening?Object.fromEntries(['.dt-year','.dt-month','.dt-day','.scr-inp'].map(k=>[k,k==='.dt-year'?readYear(screening.querySelector(k)):screening.querySelector(k).value])):null;
       const v1=Object.fromEntries(['v1-uacr','v1-cvd','v1-planned'].map(id=>[id,document.getElementById(id).value]));
