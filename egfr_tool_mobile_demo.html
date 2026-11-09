@@ -1339,7 +1339,9 @@
         const response=await fetch(calculatorApiPath('/lookup?screening='+digits),{credentials:'same-origin',cache:'no-store'});
         if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('请先登录后查询');
         const data=await response.json();if(response.status===404){enableManualEntry(digits);return;}if(!response.ok)throw Error(data.error||'查询失败');
-        if(data.screeningId!=='CN'+digits||data.locked!==true)throw Error('返回的筛选号不匹配');
+        if(data.screeningId!=='CN'+digits)throw Error('返回的筛选号不匹配');
+        if(data.manual===true){enableManualEntry(digits,data);return;}
+        if(data.locked!==true)throw Error('返回的取点状态无效，请重新查询');
         lockedBaseline=null;lockedResult=null;linkedRequestId=null;document.getElementById('review-result-link').hidden=true;document.querySelectorAll('#v1-fields input,#v1-fields select').forEach(e=>{e.disabled=false;if(e.type==='checkbox')e.checked=false;else e.value=e.tagName==='SELECT'?'unknown':'';});document.getElementById('v1-result').textContent='';document.getElementById('v1-drugs').hidden=true;lastReport=null;
         document.getElementById('result-panel').style.display='none';document.getElementById('age').value=data.age;setSex(data.sex==='女'?'F':'M');
         document.getElementById('scr-tbody').replaceChildren();rowId=0;addRow('screening');
@@ -1357,16 +1359,18 @@
       finally {button.disabled=false;}
     }
     let linkedSubmitting=false;
-    function enableManualEntry(digits){
+    function enableManualEntry(digits,data={}){
       if(lockedBaseline&&lockedBaseline.screeningId!=='CN'+digits){resetAll();setUsageMode('audit');document.getElementById('sid').value=digits;}
       else if(lockedBaseline&&!lockedBaseline.manual){document.querySelectorAll('#scr-tbody tr[data-locked="true"]').forEach(row=>row.remove());document.getElementById('age').value='';}
-      lockedBaseline={manual:true,screeningId:'CN'+digits};lockedResult=null;linkedRequestId=null;lastReport=null;
+      lockedBaseline={manual:true,screeningId:'CN'+digits,...(data.subjectRef?{subjectRef:data.subjectRef}:{}),initials:data.initials||''};lockedResult=null;linkedRequestId=null;lastReport=null;
       document.getElementById('age').disabled=false;
       document.querySelectorAll('#scr-tbody tr[data-type="history"]').forEach(row=>{row.dataset.supplemental='true';});
       document.querySelectorAll('#v1-fields input,#v1-fields select,#scr-tbody input,#scr-tbody select,#scr-tbody button,.add-btn,.calc-wrap .calc-btn').forEach(e=>e.disabled=false);
       document.getElementById('result-panel').style.display='none';document.getElementById('review-result-link').hidden=true;
       document.querySelector('.add-btn').textContent='＋ 添加历史记录点';
-      const status=document.getElementById('import-status');status.textContent='未找到历史数据，可手工填写后提交';status.style.color='var(--text-2)';hideError();
+      document.querySelector('.calc-btn span:first-child').textContent='确认数据无误，锁定数据，回传项目组复核';
+      document.querySelectorAll('.demo-btns button[onclick^="fillDemo"]').forEach(b=>b.disabled=true);
+      const status=document.getElementById('import-status');status.textContent=data.manualReason||'未找到历史数据，可人工补录后提交项目组复核。';status.style.color='var(--text-2)';hideError();
     }
     function invalidatePreview(){if(lockedResult)return;const send=document.getElementById('submit-review');send.disabled=true;send.textContent='请先重新计算';if(!send.hidden)document.getElementById('v1-delivery').textContent='输入已修改，请重新计算';}
     async function calculateLinked(submit=false) {
@@ -1389,7 +1393,7 @@
       linkedSubmitting=true;editables.forEach(e=>e.disabled=true);document.getElementById('lookup-btn').disabled=true;document.getElementById('sid').disabled=true;document.getElementById('mode-free').disabled=true;document.getElementById('mode-audit').disabled=true;document.getElementById('mode-single').disabled=true;document.getElementById('reset-top').disabled=true;
       button.disabled=true;button.querySelector('span:first-child').textContent='正在生成判定…';linkedRequestId??=crypto.randomUUID();
       try {
-        const response=await fetch(calculatorApiPath(submit?'/save':'/preview'),{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,...(lockedBaseline.manual?{inputMode:'manual',screeningId:lockedBaseline.screeningId,age,sex:sex==='F'?'女':'男'}:{subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest}),date:date.toISOString().slice(0,10),creatinine:cr,history,v1})});
+        const response=await fetch(calculatorApiPath(submit?'/save':'/preview'),{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:linkedRequestId,...(lockedBaseline.manual?{inputMode:'manual',screeningId:lockedBaseline.screeningId,subjectRef:lockedBaseline.subjectRef,age,sex:sex==='F'?'女':'男'}:{subjectRef:lockedBaseline.subjectRef,baselineId:lockedBaseline.baselineId,baselineDigest:lockedBaseline.baselineDigest}),date:date.toISOString().slice(0,10),creatinine:cr,history,v1})});
         if(response.redirected||!response.headers.get('content-type')?.includes('application/json'))throw Error('登录已过期，请重新登录');
         const result=await response.json();if(!response.ok)throw Error(result.error||'未确认保存成功，请重试');usageEvent('calculate');if(submit)lockedResult=result;renderV1Decision(result.screening);document.getElementById('v1-delivery').textContent=submit?'正在回传项目组审核…':'尚未回传，可修改后重新计算';const send=document.getElementById('submit-review');send.hidden=true;send.disabled=submit;send.textContent=submit?'回传审核中…':'确认数据无误，锁定数据，回传项目组复核';
         document.getElementById('result-panel').classList.remove('single-point');
