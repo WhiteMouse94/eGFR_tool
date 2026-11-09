@@ -1143,6 +1143,7 @@
     <!-- SCr History -->
     <div class="card" id="scr-history">
       <div class="card-title">血肌酐历史记录</div>
+      <p id="point-supplement-hint" style="margin:0 0 12px;color:var(--text-2);font-size:12px;line-height:1.6">可补充未自动识别的数据点。</p>
       <table class="scr-table">
         <thead>
           <tr>
@@ -1354,7 +1355,7 @@
           row.dataset.locked='true';row.querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
         }
         lockedBaseline=data;document.getElementById('age').disabled=true;document.querySelectorAll('.demo-btns button[onclick^="fillDemo"]').forEach(b=>b.disabled=true);document.querySelector('.add-btn').disabled=false;document.querySelector('.add-btn').textContent='＋ 补充历史肌酐点';document.querySelector('.calc-btn').disabled=false;document.querySelector('.calc-btn span:first-child').textContent=usageMode==='audit'?'确认数据无误，锁定数据，回传项目组复核':'计算';
-        status.textContent='（'+data.initials+'）信息导入成功';status.style.color='var(--teal)';hideError();
+        status.textContent='（'+data.initials+'）信息自动拉取完成，可补充未自动识别的数据点';status.style.color='var(--teal)';hideError();
       } catch(error) {status.textContent=error.message;status.style.color='var(--red)';if(lockedBaseline)document.querySelector('.calc-btn').disabled=true;}
       finally {button.disabled=false;}
     }
